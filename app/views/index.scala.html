@@ -1,20 +1,17 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+@(openHouses: List[models.askde.OpenHouse])
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
+<html>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Java")
+<body>
 
+<table>
+	<tr><th>zip</th><th>created ts</th><th>id</th><th>lid</th><th>iscurrent</th><th>isrental?</th><th>status</th><th>address</th><th>unit #</th><th>date</th><th>start time</th><th>start dt</th><th>end time</th><th>end dt</th><th>price</th><th>nhood</th><th>city</th></tr>
+@for(o <- openHouses){
+	<tr><td>@o.getZipCode()</td><td>@o.getCreatedAt()</td><td>@o.getId()</td><td>@o.getListingID()</td><td>@o.isCurrent()</td><td>@o.isRental()<td>@o.getStatus()</td><td>@o.getAddress()</td><td>@o.getUnitNumber()</td><td>@o.getDate()</td><td>@o.getStartTime()</td><td>@o.getStartDateTime()</td><td>@o.getEndTime()</td><td>@o.getEndDateTime()</td><td>@o.getPrice()</td><td>@o.getNeighborhood()</td><td>@o.getCity()</td></tr>
 }
+
+</table>
+
+</body>
+
+</html>
