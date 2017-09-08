@@ -1,1 +1,1 @@
-cat /home/ec2-user/openhouseai/target/universal/stage/RUNNING_PID | xargs kill -SIGTERM
+cat /home/ec2-user/askde/target/universal/stage/RUNNING_PID | xargs kill -SIGTERM
