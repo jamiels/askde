@@ -28,6 +28,9 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
+		Logger.info("Invoking");
+		Logger.info("incomingJsonRequest is " + incomingJsonRequest);
+		Logger.info("open houses is " + ts.getOpenHouses());
 		if(ts.getOpenHouses()==null || incomingJsonRequest==null) {
 			String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
 			Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
