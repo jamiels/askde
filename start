@@ -1,0 +1,2 @@
+/home/ec2-user/openhouseai/target/universal/stage/bin/openhouseai -Dconfig.resource=prod.conf -J-server -J-XX:+UseConcMarkSweepGC &
+

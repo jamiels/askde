@@ -34,7 +34,7 @@ public class AskDESkillService extends BaseAlexaService {
 			return packageResponse(messageIfListingsDown);
 		}
 		
-		String intent = extractIntent(incomingJsonRequest);
+		String intent = getIntent(incomingJsonRequest);
 		if(intent==null || intent.isEmpty()) {
 			String messageIfIntentBlank = conf.getString("askde.messageIfIntentBlank");
 			Logger.info("Intent is blank or null - Response is: " + messageIfIntentBlank);
