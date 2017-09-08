@@ -178,6 +178,8 @@ public class ListingsService extends BaseService {
 		boolean isLoadFromURLSuccessful = false;
 		Logger.info("Retrieving Zillow feed URL from config file");
 		String url = conf.getString("askde.listingsFeedURL");
+		if(url==null || url.isEmpty())
+			throw new ListingsLoadException("Feed URL not in config file or is blank");
 		Logger.info("Retrieving listings feed from Zillow at URL " + url);
 		CompletionStage<WSResponse> resp =  ws.url(url)
 				.setRequestTimeout(50000)

@@ -16,6 +16,7 @@ public class AskDESkillController extends BaseController {
 	public Result invoke() {
 		Logger.info("Ask DE skill request received");
 		JsonNode json = request().body().asJson();
+		
 		return ok(dess.invoke(json)).as("application/json");
 		
 	}
