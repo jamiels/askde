@@ -38,7 +38,7 @@ public class AskDESkillService extends BaseAlexaService {
 		adjectives.add("Lovely");
 		adjectives.add("Fantastic");
 		
-		appenders.add("Oh yes, ");
+		appenders.add("Oh! yes, ");
 		appenders.add("Also");
 		appenders.add("and do me a favor and");
 		appenders.add("and remember to");
@@ -71,7 +71,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		description+= oh.getBeds() + " bedroom " + oh.getBaths() + " bathroom ";
 		description+= "located in " + oh.getNeighborhood() + ".";
-		description+= "The listing ID is " + oh.getListingID().replace("*", "") + ".";
+		description+= "The listing ID is " + oh.getListingID().replace("*", "") + ". ";
 		
 		
 		description+= getMarketing();
@@ -102,7 +102,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(oh==null)
 			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
 		else
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime());
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ".";
 		
 		message += convertPropertyDescriptionToSpeech(oh);
 		Logger.info("Response: " + message);
