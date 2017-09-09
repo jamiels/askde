@@ -173,6 +173,15 @@ public class ListingsService extends BaseService {
 		return false;
 	}
 	
+	private String expandNeighborhood(String neighborhood) {
+		neighborhood = neighborhood.replace("n. ", "north ");
+		neighborhood = neighborhood.replace("s. ", "south ");
+		neighborhood = neighborhood.replace("e. ", "east ");
+		neighborhood = neighborhood.replace("w. ", "west ");
+		neighborhood = neighborhood.replace("st. ", "saint ");
+		return neighborhood;
+	}
+	
 	public void loadOpenHouses() throws ListingsLoadException {
 		Set<Integer> zipCodeWhiteList = loadZipCodes();
 		JAXBContext ctx;
@@ -261,6 +270,7 @@ public class ListingsService extends BaseService {
 				
 		Listings discardedListings = new Listings();
 		Listings listingsWithOpenHouses = new Listings();
+		String neighborhood = null;
 		boolean isRental = false;
 		for(Listing l : allListings.getListing()) {	
 			isRental = false;
@@ -269,7 +279,8 @@ public class ListingsService extends BaseService {
 				Integer zip = Integer.valueOf(l.getLocation().getZip().trim());
 				OpenHouses openHouses = l.getOpenHouses();
 				if(zipCodeWhiteList.contains(zip)) {
-					neighborhoods.add(l.getNeighborhood().getName().toLowerCase());
+					neighborhood = expandNeighborhood(l.getNeighborhood().getName().toLowerCase());
+					neighborhoods.add(neighborhood);
 					if(openHouses.getOpenHouse().size()>0) { // Match up with zip whitelist and make sure there are open houses in this listing
 						if(checkIsRental(l)) { // toggle rental flag
 							isRental = true;
@@ -292,7 +303,7 @@ public class ListingsService extends BaseService {
 								oh.setUnitNumber(l.getLocation().getUnitNumber());
 								oh.setListingID(l.getListingDetails().getMlsId());
 								oh.setZipCode(Integer.valueOf(l.getLocation().getZip()));
-								oh.setNeighborhood(l.getNeighborhood().getName());
+								oh.setNeighborhood(neighborhood);
 								oh.setCity(l.getLocation().getCity());
 								oh.setState(l.getLocation().getState());
 								oh.setDescription(l.getBasicDetails().getDescription());
@@ -378,7 +389,7 @@ public class ListingsService extends BaseService {
 			Logger.error("Failed to write neighborhoods",e);
 		}
 
-	
+		Logger.info("Load completed");
 		// Signal to gc
 		neighborhoods = null;
 		listingsWithOpenHouses = null;
