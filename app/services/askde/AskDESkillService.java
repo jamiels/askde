@@ -10,6 +10,8 @@ import play.inject.ApplicationLifecycle;
 import raven.services.BaseAlexaService;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import models.askde.OpenHouse;
+
 public class AskDESkillService extends BaseAlexaService {
 	
 
@@ -22,7 +24,10 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
-		return "intentOpenHouseByZipCode!";
+		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
+		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
+		String message = "The next open house is at " + oh.getAddress() + " starting at " + oh.getStartTime();
+		return packageResponse(message);
 	}
 
 	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
