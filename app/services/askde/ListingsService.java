@@ -52,10 +52,7 @@ public class ListingsService extends BaseService {
 	}
 	
 	public List<models.askde.OpenHouse> getOpenHouses() {
-		Logger.info("Retrieving open houses");
 		List<models.askde.OpenHouse> openHouses = models.askde.OpenHouse.find.all();
-		Logger.info("null?: " + openHouses);
-		Logger.info("count: " + openHouses.size());
 		return openHouses;
 	}
 	

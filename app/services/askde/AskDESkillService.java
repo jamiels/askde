@@ -30,10 +30,7 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
-		Logger.info("Invoking");
-		Logger.info("incomingJsonRequest is " + incomingJsonRequest);
-		Logger.info("open houses is " + ts.getOpenHouses());
-		if(ts.getOpenHouses()==null || incomingJsonRequest==null) {
+		if(ts == null || ts.getOpenHouses()==null || incomingJsonRequest==null) {
 			String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
 			Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
 			return packageResponse(messageIfListingsDown);
@@ -49,14 +46,14 @@ public class AskDESkillService extends BaseAlexaService {
 		intent = intent.toLowerCase();
 		String responseMessage = null;
 		switch(intent) {
-			case "getopenhousebyzipcode":
+			case "nextopenhousebyzip":
 				responseMessage = intentOpenHouseByZipCode(incomingJsonRequest);
 				break;
 			case "getopenhousebyneighborhood":
 				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
 				break;
 			default:
-				responseMessage = conf.getString("askde.messageIfListingsDown");
+				responseMessage = conf.getString("askde.messageIfListingsDown"); // TODO: Change to a better message
 		}
 		
 		return packageResponse(responseMessage);		
