@@ -12,11 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class AskDESkillService extends BaseAlexaService {
 	
+
 	private ListingsService ts;
 
 	@Inject
 	public AskDESkillService(Environment env, Configuration conf, ApplicationLifecycle al, ListingsService ts) {
 		super(env, conf, al);
+		this.ts = ts;
 	}
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
