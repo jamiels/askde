@@ -136,7 +136,7 @@ public class AskDESkillService extends BaseAlexaService {
 				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
 				break;
 			default:
-				responseMessage = conf.getString("askde.messageIfListingsDown"); // TODO: Change to a better message
+				responseMessage = defaultResponse(); // TODO: Change to a better message
 		}
 		
 		return responseMessage;		
