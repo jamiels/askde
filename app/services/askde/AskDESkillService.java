@@ -63,7 +63,7 @@ public class AskDESkillService extends BaseAlexaService {
 				responseMessage = conf.getString("askde.messageIfListingsDown"); // TODO: Change to a better message
 		}
 		
-		return packageResponse(responseMessage);		
+		return responseMessage;		
 	}
 		
 
