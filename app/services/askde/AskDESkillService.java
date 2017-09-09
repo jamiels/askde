@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 
+import org.h2.util.StringUtils;
+
 import play.Application;
 import play.Configuration;
 import play.Environment;
@@ -92,6 +94,9 @@ public class AskDESkillService extends BaseAlexaService {
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
 		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
+		if(!StringUtils.isNumber(zipCode)) {
+			return packageResponse("The zip code was not found or came across as incomplete, please try again");
+		}
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
 		String message= null;
 		if(oh==null)
