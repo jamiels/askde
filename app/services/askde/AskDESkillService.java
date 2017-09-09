@@ -56,7 +56,7 @@ public class AskDESkillService extends BaseAlexaService {
 	public String getMarketing() {
 		String appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
 		String marketing = marketings.get(ThreadLocalRandom.current().nextInt(0, marketings.size()));
-		String message = appender + " " + marketing + "!";
+		String message = appender + " <break time='1s'/> " + marketing + "!";
 		
 		return message;
 	}
@@ -70,8 +70,8 @@ public class AskDESkillService extends BaseAlexaService {
 			description += oh.getPropertyType() + " for sale is a ";
 		
 		description+= oh.getBeds() + " bedroom " + oh.getBaths() + " bathroom ";
-		description+= "located in " + oh.getNeighborhood() + ".";
-		description+= "The listing ID is " + oh.getListingID().replace("*", "") + ". ";
+		description+= "located in " + oh.getNeighborhood() + ". ";
+		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>. <break time='2s'/>";
 		
 		
 		description+= getMarketing();
@@ -102,7 +102,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(oh==null)
 			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
 		else
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ".";
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
 		
 		message += convertPropertyDescriptionToSpeech(oh);
 		Logger.info("Response: " + message);
