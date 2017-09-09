@@ -55,7 +55,7 @@ public class AskDESkillService extends BaseAlexaService {
 	
 	public String getMarketing() {
 		String appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
-		String marketing = marketings.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
+		String marketing = marketings.get(ThreadLocalRandom.current().nextInt(0, marketings.size()));
 		String message = appender + " " + marketing + "!";
 		
 		return message;
