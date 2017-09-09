@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -201,6 +202,9 @@ public class ListingsService extends BaseService {
 			throw new ListingsLoadException("JAXBContext unmarshaller creation failed. Message: " + e.getMessage());			
 		}
 		Listings allListings = null;
+		Set<String> neighborhoods = new HashSet<String>(20);
+		
+		
 		try {
 			allListings = (Listings) u.unmarshal(feed.toCompletableFuture().get());
 			isLoadFromURLSuccessful = true;
@@ -258,51 +262,53 @@ public class ListingsService extends BaseService {
 		Listings discardedListings = new Listings();
 		Listings listingsWithOpenHouses = new Listings();
 		boolean isRental = false;
-		for(Listing l : allListings.getListing()) {
+		for(Listing l : allListings.getListing()) {	
 			isRental = false;
 			if(listingsCount++%1000==0) Logger.info("... " + listingsCount + " listings processed");
 			if(checkListingIsClean(l)) { // Check if it is clean before doing any work
 				Integer zip = Integer.valueOf(l.getLocation().getZip().trim());
 				OpenHouses openHouses = l.getOpenHouses();
-				if(zipCodeWhiteList.contains(zip) && openHouses.getOpenHouse().size()>0) { // Match up with zip whitelist and make sure there are open houses in this listing
-					if(checkIsRental(l)) { // toggle rental flag
-						isRental = true;
-						rentalsCount++;
-					}
+				if(zipCodeWhiteList.contains(zip)) {
+					neighborhoods.add(l.getNeighborhood().getName().toLowerCase());
+					if(openHouses.getOpenHouse().size()>0) { // Match up with zip whitelist and make sure there are open houses in this listing
+						if(checkIsRental(l)) { // toggle rental flag
+							isRental = true;
+							rentalsCount++;
+						}
 					Date now = new Date();
 					listingsWithOpenHouses.getListing().add(l); // need this to output a file 
 					for(OpenHouse o : openHouses.getOpenHouse()) {
 						 // need to check if oh is in the past
-						if(!checkOpenHouseIsInPastAlready(now,o) && checkOpenHouseIsClean(o)) {	// check open house has relevant pieces of data before processing							
-							oh = new models.askde.OpenHouse();
-							oh.setStartDateTime(o.getDate(),o.getStartTime());
-							oh.setAddress(l.getLocation().getStreetAddress());
-							oh.setUnitNumber(l.getLocation().getUnitNumber());
-							oh.setDate(o.getDate());
-							oh.setStatus(l.getListingDetails().getStatus());
-							oh.setStartTime(o.getStartTime());
-							oh.setEndDateTime(o.getDate(),o.getEndTime());
-							oh.setEndTime(o.getEndTime());
-							oh.setUnitNumber(l.getLocation().getUnitNumber());
-							oh.setListingID(l.getListingDetails().getMlsId());
-							oh.setZipCode(Integer.valueOf(l.getLocation().getZip()));
-							oh.setNeighborhood(l.getNeighborhood().getName());
-							oh.setCity(l.getLocation().getCity());
-							oh.setState(l.getLocation().getState());
-							oh.setDescription(l.getBasicDetails().getDescription());
-							oh.setPrice(l.getListingDetails().getPrice());
-							oh.setStatus(l.getListingDetails().getStatus());
-							oh.setRental(isRental);
-							oh.setBeds(l.getBasicDetails().getBedrooms());
-							oh.setBaths(l.getBasicDetails().getBathrooms());
-							oh.setPropertyType(l.getBasicDetails().getPropertyType());
-							oh.setCurrent(true);
-							listOfOpenHouses.add(oh);
-						} else {
-							Logger.info("Open house in past or missing or malformed date/time data, listing ID: " + l.getListingDetails().getMlsId());
-						}
-					}
-					
+							if(!checkOpenHouseIsInPastAlready(now,o) && checkOpenHouseIsClean(o)) {	// check open house has relevant pieces of data before processing							
+								oh = new models.askde.OpenHouse();
+								oh.setStartDateTime(o.getDate(),o.getStartTime());
+								oh.setAddress(l.getLocation().getStreetAddress());
+								oh.setUnitNumber(l.getLocation().getUnitNumber());
+								oh.setDate(o.getDate());
+								oh.setStatus(l.getListingDetails().getStatus());
+								oh.setStartTime(o.getStartTime());
+								oh.setEndDateTime(o.getDate(),o.getEndTime());
+								oh.setEndTime(o.getEndTime());
+								oh.setUnitNumber(l.getLocation().getUnitNumber());
+								oh.setListingID(l.getListingDetails().getMlsId());
+								oh.setZipCode(Integer.valueOf(l.getLocation().getZip()));
+								oh.setNeighborhood(l.getNeighborhood().getName());
+								oh.setCity(l.getLocation().getCity());
+								oh.setState(l.getLocation().getState());
+								oh.setDescription(l.getBasicDetails().getDescription());
+								oh.setPrice(l.getListingDetails().getPrice());
+								oh.setStatus(l.getListingDetails().getStatus());
+								oh.setRental(isRental);
+								oh.setBeds(l.getBasicDetails().getBedrooms());
+								oh.setBaths(l.getBasicDetails().getBathrooms());
+								oh.setPropertyType(l.getBasicDetails().getPropertyType());
+								oh.setCurrent(true);
+								listOfOpenHouses.add(oh);
+							} else {
+								Logger.info("Open house in past or missing or malformed date/time data, listing ID: " + l.getListingDetails().getMlsId());
+							}
+						}				
+					} else discardedListings.getListing().add(l);
 				} else
 					discardedListings.getListing().add(l);
 			} else
@@ -359,9 +365,22 @@ public class ListingsService extends BaseService {
 			Logger.error("Failed to marshal feed to local file for ListingsWithOpenHouses ",e);
 		}
 		
-		
-		
+		Logger.info("Persisting list of neighborhoods, needed for training Alexa");
+		f = new File ("data/Neighborhoods.csv");
+		PrintWriter pw;
+		try {
+			pw = new PrintWriter(f);
+			for(String n : neighborhoods)
+				pw.println(n);	
+			pw.flush();
+			pw.close();
+		} catch (FileNotFoundException e) {
+			Logger.error("Failed to write neighborhoods",e);
+		}
+
+	
 		// Signal to gc
+		neighborhoods = null;
 		listingsWithOpenHouses = null;
 		zipCodeWhiteList = null;
 		listOfOpenHouses = null;
