@@ -28,9 +28,9 @@ public class AskDESkillService extends BaseAlexaService {
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
 		String message= null;
 		if(oh==null)
-			message="There are no open houses in the " + zipCode + " zip code";
+			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
 		else
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + oh.getStartTime();
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + oh.getStartDateTime();
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
 		return packageResponse(message);
