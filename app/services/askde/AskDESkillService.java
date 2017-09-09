@@ -26,7 +26,7 @@ public class AskDESkillService extends BaseAlexaService {
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
 		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
-		String message = "The next open house is at <say-as interpret-as=\"address\">" + oh.getAddress() + "</say-as> starting at " + oh.getStartTime();
+		String message = "The next open house is at " + oh.getAddress() + " starting at " + oh.getStartTime();
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
 		return packageResponse(message);
