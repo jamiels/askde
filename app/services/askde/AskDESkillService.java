@@ -26,7 +26,11 @@ public class AskDESkillService extends BaseAlexaService {
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
 		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
-		String message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + oh.getStartTime();
+		String message= null;
+		if(oh==null)
+			message="There are no open houses in the " + zipCode + " zip code";
+		else
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + oh.getStartTime();
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
 		return packageResponse(message);
@@ -64,6 +68,16 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 		
 		return responseMessage;		
+	}
+	
+	public String defaultResponse() {
+		String responseMessage = conf.getString("askde.messageIfListingsDown");
+		if(responseMessage==null) 
+			responseMessage="Hi, I couldn't get what you said, please repeat that!";
+		
+		return packageResponse(responseMessage);
+		
+		
 	}
 		
 
