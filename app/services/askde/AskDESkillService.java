@@ -56,7 +56,7 @@ public class AskDESkillService extends BaseAlexaService {
 	public String getMarketing() {
 		String appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
 		String marketing = marketings.get(ThreadLocalRandom.current().nextInt(0, marketings.size()));
-		String message = appender + " <break time='1s'/> " + marketing + "!";
+		String message = appender + " " + marketing + "!";
 		
 		return message;
 	}
@@ -69,9 +69,15 @@ public class AskDESkillService extends BaseAlexaService {
 		else
 			description += oh.getPropertyType() + " for sale is a ";
 		
-		description+= oh.getBeds() + " bedroom " + oh.getBaths() + " bathroom ";
+		String bedrooms = null;
+		if(oh.getBaths().intValue()>0)
+			bedrooms = oh.getBeds() + " bedroom ";
+		else
+			bedrooms = " studio ";
+		
+		description+= bedrooms + " and " + oh.getBaths() + " bathroom ";
 		description+= "located in " + oh.getNeighborhood() + ". ";
-		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>. <break time='2s'/>";
+		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>. <break time='1s'/>";
 		
 		
 		description+= getMarketing();
@@ -102,7 +108,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(oh==null)
 			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
 		else
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting at " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
 		
 		message += convertPropertyDescriptionToSpeech(oh);
 		Logger.info("Response: " + message);
