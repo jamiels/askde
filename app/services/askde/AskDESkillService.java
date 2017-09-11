@@ -107,10 +107,10 @@ public class AskDESkillService extends BaseAlexaService {
 		String message= null;
 		if(oh==null)
 			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
-		else
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
-		
-		message += convertPropertyDescriptionToSpeech(oh);
+		else {
+			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+			message += convertPropertyDescriptionToSpeech(oh);
+		}
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
 		return packageResponse(message);
