@@ -133,7 +133,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Consent token: " + consentToken);
 		
 		String endpoint = "https://api.amazonalexa.com//v1/devices/"+deviceId+"/settings/address/countryAndPostalCode";
-		CompletionStage<WSResponse> resp =  ws.url(endpoint)
+		CompletionStage<WSResponse> resp =  ws.url(endpoint).setHeader("Authorization","Bearer " + consentToken)
 				.setRequestTimeout(50000)
 				.get();
 		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
