@@ -142,20 +142,27 @@ public class AskDESkillService extends BaseAlexaService {
 		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
 		try {
 			JsonNode response = feed.toCompletableFuture().get();
+			
+			Logger.info("Check if response is null");
 			if (response==null)
 				return defaultResponse();
-				
+			Logger.info("Response: " + response.toString());
+			
+			Logger.info("CHecking if postalCode exists");
 			JsonNode p = incomingJsonRequest.findPath("postalCode");
 			if(p==null)
 				return defaultResponse();
 			
+			Logger.info("Checking if zipcode is value is null or empty");
 			String zipCode = p.textValue();
 			if(zipCode==null || zipCode.isEmpty())
 				return defaultResponse();
 			
+			Logger.info("Making sure its a number");
 			if(!StringUtils.isNumber(zipCode))
 				return defaultResponse();
 			
+			Logger.info("Pulling up an open house listing");
 			return intentOpenHouseByZipCode(zipCode);
 			
 		} catch (InterruptedException | ExecutionException e) {
