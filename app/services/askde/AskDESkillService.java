@@ -149,7 +149,7 @@ public class AskDESkillService extends BaseAlexaService {
 			Logger.info("Response: " + response.toString());
 			
 			Logger.info("CHecking if postalCode exists");
-			JsonNode p = incomingJsonRequest.findPath("postalCode");
+			JsonNode p = response.findPath("postalCode");
 			if(p==null)
 				return defaultResponse();
 			
