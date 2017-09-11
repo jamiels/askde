@@ -115,6 +115,8 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Packaged response: " + packageResponse(message));
 		return packageResponse(message);
 	}
+	
+
 
 	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
 		return "intentOpenHouseByNeighborhood!";
@@ -126,6 +128,9 @@ public class AskDESkillService extends BaseAlexaService {
 			Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
 			return packageResponse(messageIfListingsDown);
 		}
+		Logger.info("Request:");
+		Logger.info(incomingJsonRequest.asText());
+		Logger.info(incomingJsonRequest.toString());
 		
 		String intent = getIntent(incomingJsonRequest);
 		if(intent==null || intent.isEmpty()) {
