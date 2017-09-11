@@ -162,7 +162,6 @@ public class AskDESkillService extends BaseAlexaService {
 			return packageResponse(messageIfListingsDown);
 		}
 		Logger.info("Request:");
-		Logger.info(incomingJsonRequest.asText());
 		Logger.info(incomingJsonRequest.toString());
 		
 		String intent = getIntent(incomingJsonRequest);
@@ -173,6 +172,7 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 		
 		intent = intent.toLowerCase();
+		Logger.info("Intent invoked: " + intent);
 		String responseMessage = null;
 		switch(intent) {
 			case "nextopenhousebyzip":
