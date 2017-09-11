@@ -140,7 +140,7 @@ public class AskDESkillService extends BaseAlexaService {
 		try {
 			JsonNode response = feed.toCompletableFuture().get();
 			Logger.info(response.asText());
-			Logger.info(response.asText());
+			Logger.info(response.toString());
 		} catch (InterruptedException | ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
