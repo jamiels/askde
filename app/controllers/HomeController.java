@@ -30,8 +30,14 @@ public class HomeController extends Controller {
     }
     
     public Result loadFeed() {
-    	ls.loadOpenHouses();
-    	return ok(index.render(ls.getOpenHouses()));
+    	String apiKey = request().getQueryString("apiKey");
+    	if(apiKey==null || apiKey.isEmpty())
+    		return ok("");
+    	if(apiKey.equalsIgnoreCase("df39e0ee-01f1-46b3-a0dd-4c639c6a7655")) {
+    		ls.loadOpenHouses();
+    		return ok(index.render(ls.getOpenHouses()));
+    	}
+    	return ok("");
     }
     
     public Result getRandomOpenHouseByZipCode(Integer zipCode) {
