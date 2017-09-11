@@ -1,7 +1,10 @@
 package services.askde;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
@@ -13,6 +16,8 @@ import play.Configuration;
 import play.Environment;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,14 +27,16 @@ public class AskDESkillService extends BaseAlexaService {
 	
 
 	private ListingsService ts;
+	private WSClient ws;
 	private List<String> adjectives = new ArrayList<String>(10);
 	private List<String> marketings = new ArrayList<String>(10);
 	private List<String> appenders = new ArrayList<String>(10);
 
 	@Inject
-	public AskDESkillService(Environment env, Configuration conf, ApplicationLifecycle al, ListingsService ts) {
+	public AskDESkillService(Environment env, Configuration conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
 		super(env, conf, al);
 		this.ts = ts;
+		this.ws = ws;
 		adjectives.add("Beautiful");
 		adjectives.add("Gorgeous");
 		adjectives.add("Stunning");
@@ -116,6 +123,32 @@ public class AskDESkillService extends BaseAlexaService {
 		return packageResponse(message);
 	}
 	
+	public String intentOpenHouseNearMe(JsonNode incomingJsonRequest) {
+		JsonNode c = incomingJsonRequest.findPath("consentToken");
+		JsonNode d = incomingJsonRequest.findPath("deviceId");
+		if(c==null || d==null)
+			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
+		String consentToken = c.textValue();
+		String deviceId = d.textValue();
+		Logger.info("Consent token: " + consentToken);
+		
+		String endpoint = "https://api.amazonalexa.com//v1/devices/"+deviceId+"/settings/address/countryAndPostalCode";
+		CompletionStage<WSResponse> resp =  ws.url(endpoint)
+				.setRequestTimeout(50000)
+				.get();
+		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
+		try {
+			JsonNode response = feed.toCompletableFuture().get();
+			Logger.info(response.asText());
+			Logger.info(response.asText());
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return packageResponse("You got it");
+	}
+	
 
 
 	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
@@ -147,6 +180,9 @@ public class AskDESkillService extends BaseAlexaService {
 				break;
 			case "getopenhousebyneighborhood":
 				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
+				break;
+			case "openhousenearme":
+				responseMessage = intentOpenHouseNearMe(incomingJsonRequest);
 				break;
 			default:
 				responseMessage = defaultResponse(); // TODO: Change to a better message
