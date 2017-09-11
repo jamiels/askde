@@ -103,24 +103,27 @@ public class AskDESkillService extends BaseAlexaService {
 		
 	}
 	
-	
+	public String intentOpenHouseByZipCode(String zipCode) {
+
+		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
+		String message= null;
+		if(oh==null)
+			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
+		else {
+			message = "The next open house in <say-as interpret-as='spell-out'>" + zipCode+ "</say-as> is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+			message += convertPropertyDescriptionToSpeech(oh);
+		}
+		Logger.info("Response: " + message);
+		Logger.info("Packaged response: " + packageResponse(message));
+		return packageResponse(message);		
+	}
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
 		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
 		if(!StringUtils.isNumber(zipCode)) {
 			return packageResponse("The zip code was not found or came across as incomplete, please try again");
 		}
-		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
-		String message= null;
-		if(oh==null)
-			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
-		else {
-			message = "The next open house is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
-			message += convertPropertyDescriptionToSpeech(oh);
-		}
-		Logger.info("Response: " + message);
-		Logger.info("Packaged response: " + packageResponse(message));
-		return packageResponse(message);
+		return intentOpenHouseByZipCode(zipCode);
 	}
 	
 	public String intentOpenHouseNearMe(JsonNode incomingJsonRequest) {
@@ -139,14 +142,27 @@ public class AskDESkillService extends BaseAlexaService {
 		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
 		try {
 			JsonNode response = feed.toCompletableFuture().get();
-			Logger.info(response.asText());
-			Logger.info(response.toString());
+			if (response==null)
+				return defaultResponse();
+				
+			JsonNode p = incomingJsonRequest.findPath("postalCode");
+			if(p==null)
+				return defaultResponse();
+			
+			String zipCode = p.textValue();
+			if(zipCode==null || zipCode.isEmpty())
+				return defaultResponse();
+			
+			if(!StringUtils.isNumber(zipCode))
+				return defaultResponse();
+			
+			return intentOpenHouseByZipCode(zipCode);
+			
 		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return defaultResponse();
+
 		}
-	
-		return packageResponse("You got it");
 	}
 	
 
@@ -195,10 +211,7 @@ public class AskDESkillService extends BaseAlexaService {
 		String responseMessage = conf.getString("askde.messageIfListingsDown");
 		if(responseMessage==null) 
 			responseMessage="Hi, I couldn't get what you said, please repeat that!";
-		
 		return packageResponse(responseMessage);
-		
-		
 	}
 		
 
