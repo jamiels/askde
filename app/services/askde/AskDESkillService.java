@@ -155,6 +155,7 @@ public class AskDESkillService extends BaseAlexaService {
 			
 			Logger.info("Checking if zipcode is value is null or empty");
 			String zipCode = p.textValue();
+			Logger.info("Text value of postal field: " + p.textValue());
 			if(zipCode==null || zipCode.isEmpty())
 				return defaultResponse();
 			
