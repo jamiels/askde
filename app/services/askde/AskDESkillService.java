@@ -194,11 +194,11 @@ public class AskDESkillService extends BaseAlexaService {
 		//return intent;
 		if(neighborhood==null)
 			return packageResponse("I couldn't grab what neighborhood you mentioned");
-		
+		Logger.info("Neighborhood retrieved is " + neighborhood);
 		OpenHouse oh = ts.getRandomizedOpenHouseByNeighborhood(neighborhood);
 		if(oh==null)
 			return packageResponse ("There are no open houses in the " + neighborhood + " neigbhorhood");
-		Logger.info("Neighborhood retrieved is " + neighborhood);
+		
 		
 		return packageResponse("The neighborhood was " + neighborhood);
 	}
