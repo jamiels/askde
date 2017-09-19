@@ -199,7 +199,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Intent invoked: " + intent);
 		String responseMessage = null;
 		switch(intent) {
-			case "nextopenhousebyzip":
+			case "getnextopenhousebyzipcode":
 				responseMessage = intentOpenHouseByZipCode(incomingJsonRequest);
 				break;
 			case "getopenhousebyneighborhood":
