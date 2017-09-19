@@ -6,10 +6,10 @@
 create table ad (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   ad_image_url                  varchar(255),
   ad_click_url                  varchar(255),
-  disabled                      boolean,
+  disabled                      tinyint(1) default 0,
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
@@ -19,7 +19,7 @@ create table ad (
 create table app_registry (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   app_name                      varchar(255),
   api_key                       varchar(255),
   major_version                 integer,
@@ -43,7 +43,7 @@ create table appregistry_authenticateduser (
 create table audit_trail (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   description                   varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -54,7 +54,7 @@ create table audit_trail (
 create table authenticated_user (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   org_id                        bigint,
   password                      varchar(255),
   salt                          varbinary(255),
@@ -66,30 +66,30 @@ create table authenticated_user (
   slack_id                      varchar(255),
   last_ip                       varchar(255),
   last_browser                  varchar(255),
-  mobile_verified               boolean,
+  mobile_verified               tinyint(1) default 0,
   mobile_verification_code_last_sent datetime,
-  mobile_verification_code_sent boolean,
+  mobile_verification_code_sent tinyint(1) default 0,
   mobile_verification_code      varchar(255),
-  mobile_verification_code_generated boolean,
+  mobile_verification_code_generated tinyint(1) default 0,
   mobile_verification_code_date_generated datetime,
   link_uuid                     varchar(255),
-  email_verified                boolean,
+  email_verified                tinyint(1) default 0,
   email_verified_date           datetime,
   email_verification_last_sent  datetime,
-  email_verification_sent       boolean,
+  email_verification_sent       tinyint(1) default 0,
   email_verification_ticket     varchar(255),
-  email_verification_ticket_generated boolean,
+  email_verification_ticket_generated tinyint(1) default 0,
   email_verification_ticket_date_generated datetime,
-  disabled                      boolean,
-  probation                     boolean,
-  email_bounced                 boolean,
+  disabled                      tinyint(1) default 0,
+  probation                     tinyint(1) default 0,
+  email_bounced                 tinyint(1) default 0,
   proxy_email_id                varchar(255),
   session_uuid                  varchar(255),
   publishable_uuid              varchar(255),
-  force_change_password         boolean,
+  force_change_password         tinyint(1) default 0,
   last_login                    datetime,
   password_reminder             varchar(255),
-  password_reset_required       boolean,
+  password_reset_required       tinyint(1) default 0,
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
@@ -111,7 +111,7 @@ create table authenticated_user_user_permission (
 create table contact_form (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
   email                         varchar(255),
   phone_number                  varchar(255),
@@ -130,7 +130,7 @@ create table contact_form (
 create table contact_form_forwardees (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   app_id                        bigint,
   to_name                       varchar(255),
   to_email                      varchar(255),
@@ -143,7 +143,7 @@ create table contact_form_forwardees (
 create table image_meta (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   access_url                    varchar(255),
   thumbnail_url                 varchar(255),
   bucket_name                   varchar(255),
@@ -151,9 +151,9 @@ create table image_meta (
   original_file_name            varchar(255),
   original_suffix               varchar(255),
   mime_type                     varchar(255),
-  disabled                      boolean,
+  disabled                      tinyint(1) default 0,
   description                   varchar(255),
-  first                         boolean,
+  first                         tinyint(1) default 0,
   file_name_uuid                varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -164,16 +164,16 @@ create table image_meta (
 create table inbox_message (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   sender_id                     bigint,
   receiver_id                   bigint,
   message                       TEXT,
-  seen_by_sender                boolean,
-  seen_by_receiver              boolean,
-  deleted                       boolean,
-  spam                          boolean,
-  saved                         boolean,
-  expired                       boolean,
+  seen_by_sender                tinyint(1) default 0,
+  seen_by_receiver              tinyint(1) default 0,
+  deleted                       tinyint(1) default 0,
+  spam                          tinyint(1) default 0,
+  saved                         tinyint(1) default 0,
+  expired                       tinyint(1) default 0,
   subject                       varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -184,7 +184,7 @@ create table inbox_message (
 create table job (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   description                   varchar(255),
   status                        varchar(255),
   completion_note               varchar(255),
@@ -199,7 +199,7 @@ create table job (
 create table login_audit (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   note                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
@@ -215,9 +215,9 @@ create table login_audit (
 create table motd (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   message                       varchar(255),
-  disabled                      boolean,
+  disabled                      tinyint(1) default 0,
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
@@ -227,7 +227,7 @@ create table motd (
 create table note (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   note                          TEXT,
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -238,7 +238,7 @@ create table note (
 create table open_house (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   address                       varchar(255),
   unit_number                   varchar(255),
   listing_id                    varchar(255),
@@ -248,7 +248,7 @@ create table open_house (
   state                         varchar(255),
   status                        varchar(255),
   price                         integer,
-  rental                        boolean,
+  rental                        tinyint(1) default 0,
   description                   TEXT,
   start_date_time               DATETIME,
   end_date_time                 DATETIME,
@@ -268,7 +268,7 @@ create table open_house (
 create table organization (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -279,7 +279,7 @@ create table organization (
 create table password_reset (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   email                         varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -290,7 +290,7 @@ create table password_reset (
 create table question_bank (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   question                      varchar(255),
   choice1                       varchar(255),
   choice2                       varchar(255),
@@ -298,9 +298,9 @@ create table question_bank (
   choice4                       varchar(255),
   choice5                       varchar(255),
   topic_id                      bigint,
-  free                          boolean,
-  registered                    boolean,
-  disabled                      boolean,
+  free                          tinyint(1) default 0,
+  registered                    tinyint(1) default 0,
+  disabled                      tinyint(1) default 0,
   answer                        integer,
   difficulty                    integer,
   solution_description          varchar(255),
@@ -319,7 +319,7 @@ create table question_bank_app_registry (
 create table registrant (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
   email                         varchar(255),
   ip                            varchar(255),
@@ -336,7 +336,7 @@ create table registrant (
 create table sms (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   from_phone_number             varchar(255),
   to_phone_number               varchar(255),
   direction                     integer,
@@ -345,7 +345,7 @@ create table sms (
   account_sid                   varchar(255),
   body                          varchar(255),
   num_media                     varchar(255),
-  orphan                        boolean,
+  orphan                        tinyint(1) default 0,
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
@@ -356,9 +356,9 @@ create table sms (
 create table security_role (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
-  public_facing                 boolean,
+  public_facing                 tinyint(1) default 0,
   public_description            varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -369,7 +369,7 @@ create table security_role (
 create table site_visitor (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   ip                            varchar(255),
   referer                       varchar(255),
   app                           varchar(255),
@@ -388,7 +388,7 @@ create table site_visitor (
 create table team (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   org_id                        bigint,
   name                          varchar(255),
   slack_url                     varchar(255),
@@ -402,7 +402,7 @@ create table team (
 create table test_result (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   u_id                          bigint,
   test_name                     varchar(255),
   answered_correct              integer,
@@ -417,9 +417,9 @@ create table test_result (
 create table topic (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
-  disabled                      boolean,
+  disabled                      tinyint(1) default 0,
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
@@ -429,7 +429,7 @@ create table topic (
 create table user_permission (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   permission_value              varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
@@ -440,12 +440,32 @@ create table user_permission (
 create table word_list (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
-  current                       boolean,
+  current                       tinyint(1) default 0,
   name                          varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
   constraint pk_word_list primary key (id)
+);
+
+create table zillow_feed_history (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  feed_load_start               DATETIME,
+  feed_load_complete            DATETIME,
+  total_listings                integer,
+  discarded_listings            integer,
+  relevant_listings             integer,
+  relevant_rentals              integer,
+  relevant_sales                integer,
+  neighborhoods                 integer,
+  failed                        tinyint(1) default 0,
+  failure_cause                 TEXT,
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_zillow_feed_history primary key (id)
 );
 
 alter table appregistry_authenticateduser add constraint fk_appregistry_authenticateduser_app_registry foreign key (app_registry_id) references app_registry (id) on delete restrict on update restrict;
@@ -495,49 +515,49 @@ create index ix_test_result_u_id on test_result (u_id);
 
 # --- !Downs
 
-alter table appregistry_authenticateduser drop constraint if exists fk_appregistry_authenticateduser_app_registry;
-drop index if exists ix_appregistry_authenticateduser_app_registry;
+alter table appregistry_authenticateduser drop foreign key fk_appregistry_authenticateduser_app_registry;
+drop index ix_appregistry_authenticateduser_app_registry on appregistry_authenticateduser;
 
-alter table appregistry_authenticateduser drop constraint if exists fk_appregistry_authenticateduser_authenticated_user;
-drop index if exists ix_appregistry_authenticateduser_authenticated_user;
+alter table appregistry_authenticateduser drop foreign key fk_appregistry_authenticateduser_authenticated_user;
+drop index ix_appregistry_authenticateduser_authenticated_user on appregistry_authenticateduser;
 
-alter table authenticated_user drop constraint if exists fk_authenticated_user_org_id;
-drop index if exists ix_authenticated_user_org_id;
+alter table authenticated_user drop foreign key fk_authenticated_user_org_id;
+drop index ix_authenticated_user_org_id on authenticated_user;
 
-alter table authenticated_user_security_role drop constraint if exists fk_authenticated_user_security_role_authenticated_user;
-drop index if exists ix_authenticated_user_security_role_authenticated_user;
+alter table authenticated_user_security_role drop foreign key fk_authenticated_user_security_role_authenticated_user;
+drop index ix_authenticated_user_security_role_authenticated_user on authenticated_user_security_role;
 
-alter table authenticated_user_security_role drop constraint if exists fk_authenticated_user_security_role_security_role;
-drop index if exists ix_authenticated_user_security_role_security_role;
+alter table authenticated_user_security_role drop foreign key fk_authenticated_user_security_role_security_role;
+drop index ix_authenticated_user_security_role_security_role on authenticated_user_security_role;
 
-alter table authenticated_user_user_permission drop constraint if exists fk_authenticated_user_user_permission_authenticated_user;
-drop index if exists ix_authenticated_user_user_permission_authenticated_user;
+alter table authenticated_user_user_permission drop foreign key fk_authenticated_user_user_permission_authenticated_user;
+drop index ix_authenticated_user_user_permission_authenticated_user on authenticated_user_user_permission;
 
-alter table authenticated_user_user_permission drop constraint if exists fk_authenticated_user_user_permission_user_permission;
-drop index if exists ix_authenticated_user_user_permission_user_permission;
+alter table authenticated_user_user_permission drop foreign key fk_authenticated_user_user_permission_user_permission;
+drop index ix_authenticated_user_user_permission_user_permission on authenticated_user_user_permission;
 
-alter table contact_form_forwardees drop constraint if exists fk_contact_form_forwardees_app_id;
-drop index if exists ix_contact_form_forwardees_app_id;
+alter table contact_form_forwardees drop foreign key fk_contact_form_forwardees_app_id;
+drop index ix_contact_form_forwardees_app_id on contact_form_forwardees;
 
-alter table inbox_message drop constraint if exists fk_inbox_message_sender_id;
-drop index if exists ix_inbox_message_sender_id;
+alter table inbox_message drop foreign key fk_inbox_message_sender_id;
+drop index ix_inbox_message_sender_id on inbox_message;
 
-alter table inbox_message drop constraint if exists fk_inbox_message_receiver_id;
-drop index if exists ix_inbox_message_receiver_id;
+alter table inbox_message drop foreign key fk_inbox_message_receiver_id;
+drop index ix_inbox_message_receiver_id on inbox_message;
 
-alter table question_bank drop constraint if exists fk_question_bank_topic_id;
-drop index if exists ix_question_bank_topic_id;
+alter table question_bank drop foreign key fk_question_bank_topic_id;
+drop index ix_question_bank_topic_id on question_bank;
 
-alter table question_bank_app_registry drop constraint if exists fk_question_bank_app_registry_question_bank;
-drop index if exists ix_question_bank_app_registry_question_bank;
+alter table question_bank_app_registry drop foreign key fk_question_bank_app_registry_question_bank;
+drop index ix_question_bank_app_registry_question_bank on question_bank_app_registry;
 
-alter table question_bank_app_registry drop constraint if exists fk_question_bank_app_registry_app_registry;
-drop index if exists ix_question_bank_app_registry_app_registry;
+alter table question_bank_app_registry drop foreign key fk_question_bank_app_registry_app_registry;
+drop index ix_question_bank_app_registry_app_registry on question_bank_app_registry;
 
-alter table team drop constraint if exists fk_team_org_id;
+alter table team drop foreign key fk_team_org_id;
 
-alter table test_result drop constraint if exists fk_test_result_u_id;
-drop index if exists ix_test_result_u_id;
+alter table test_result drop foreign key fk_test_result_u_id;
+drop index ix_test_result_u_id on test_result;
 
 drop table if exists ad;
 
@@ -596,4 +616,6 @@ drop table if exists topic;
 drop table if exists user_permission;
 
 drop table if exists word_list;
+
+drop table if exists zillow_feed_history;
 
