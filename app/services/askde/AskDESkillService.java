@@ -203,10 +203,10 @@ public class AskDESkillService extends BaseAlexaService {
 			case "getnextopenhousebyzipcode":
 				responseMessage = intentOpenHouseByZipCode(incomingJsonRequest);
 				break;
-			case "getopenhousebyneighborhood":
+			case "getnextopenhousebyneighborhood":
 				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
 				break;
-			case "openhousenearme":
+			case "getnextopenhousenearme":
 				responseMessage = intentOpenHouseNearMe(incomingJsonRequest);
 				break;
 			default:
