@@ -176,7 +176,25 @@ public class AskDESkillService extends BaseAlexaService {
 
 
 	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
-		return "intentOpenHouseByNeighborhood!";
+		String intent = getIntent(incomingJsonRequest);
+		if(intent==null || intent.isEmpty()) {
+			String messageIfIntentBlank = conf.getString("askde.messageIfIntentBlank");
+			Logger.info("Intent is blank or null - Response is: " + messageIfIntentBlank);
+			return packageResponse(messageIfIntentBlank);			
+		}
+		
+		String neighborhood = null;
+		JsonNode i = incomingJsonRequest.findPath("Neighborhood");
+		if(i==null)
+			return null;
+		JsonNode n = i.findPath("value");
+		if(n==null)
+			return null;
+		neighborhood = n.textValue();
+		//return intent;
+		
+		Logger.info("Neighborhood retrieved is " + neighborhood);
+		return packageResponse("The neighborhood was " + neighborhood);
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
