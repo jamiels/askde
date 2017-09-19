@@ -29,6 +29,10 @@ public class HomeController extends Controller {
         return ok(index.render(ls.getOpenHouses()));
     }
     
+    public Result ping() {
+    	return ok("pong");
+    }
+    
     public Result loadFeed() {
     	String apiKey = request().getQueryString("apiKey");
     	if(apiKey==null || apiKey.isEmpty())

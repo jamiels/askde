@@ -189,6 +189,50 @@ public class ListingsService extends BaseService {
 		neighborhood = neighborhood.replace("hastings-on-hudson", "hastings on hudson");
 		neighborhood = neighborhood.replace("soho - nolita", "soho");
 		neighborhood = neighborhood.replace("garden city s.", "garden city");
+		
+		
+		
+		neighborhood = neighborhood.replace("huntington sta", "huntington station");
+		neighborhood = neighborhood.replaceAll("pt.jefferson sta", "port jefferson station");
+		neighborhood = neighborhood.replaceAll("pt.jefferson vil", "port jefferson village"); 
+		neighborhood = neighborhood.replaceAll("quiogue","quogue");
+		neighborhood = neighborhood.replaceAll("quogue north","quogue");
+		neighborhood = neighborhood.replaceAll("quogue south","quogue");
+		neighborhood = neighborhood.replaceAll("rochaway beach", "rockaway beach");
+		neighborhood = neighborhood.replaceAll("rochaway park", "rockaway park");
+		neighborhood = neighborhood.replaceAll("sagaponack north", "sagaponack");
+		neighborhood = neighborhood.replaceAll("sagaponack south", "sagaponack");
+		neighborhood = neighborhood.replaceAll("shelter island h", "shelter island heights");
+		neighborhood = neighborhood.replaceAll("richmond hill south", "richmond hill");
+		neighborhood = neighborhood.replaceAll("richmond hill north", "richmond hill");
+		neighborhood = neighborhood.replaceAll("queens village south", "queens village");
+		neighborhood = neighborhood.replaceAll("queens village north", "queens village");		
+		neighborhood = neighborhood.replaceAll("amagansett north", "amagansett");
+		neighborhood = neighborhood.replaceAll("amagansett south", "amagansett");
+		neighborhood = neighborhood.replaceAll("amagansett dunes", "amagansett");
+		neighborhood = neighborhood.replaceAll("bellerose terr ", "bellerose terrace");
+		neighborhood = neighborhood.replaceAll("cold spring hrbr", "cold spring harbor");
+		neighborhood = neighborhood.replaceAll("e atlantic beach", "east atlantic beach");
+		neighborhood = neighborhood.replaceAll("east hampton northwest", "east hampton");
+		neighborhood = neighborhood.replaceAll("east hampton south", "east hampton");
+		neighborhood = neighborhood.replaceAll("eh north", "east hampton");
+		neighborhood = neighborhood.replaceAll("flatiron district", "flatiron");
+		neighborhood = neighborhood.replaceAll("fresh meadow", "fresh meadows");
+		neighborhood = neighborhood.replaceAll("great neck est", "great neck");
+		neighborhood = neighborhood.replaceAll("great neck east", "great neck");
+		
+		neighborhood = neighborhood.replaceAll("jamaica north", "jamaica");
+		neighborhood = neighborhood.replaceAll("jamaica south", "jamaica");
+		neighborhood = neighborhood.replaceAll("westhampton beach north", "west hampton beach");
+		neighborhood = neighborhood.replaceAll("westhampton beach south", "west hampton beach");
+		
+		neighborhood = neighborhood.replaceAll("westhampton dunes", "west hampton");
+		neighborhood = neighborhood.replaceAll("westhampton north", "west hampton");
+		neighborhood = neighborhood.replaceAll("westhampton south", "west hampton");
+		
+		
+		
+		
 		return neighborhood;
 	}
 	
@@ -434,6 +478,7 @@ public class ListingsService extends BaseService {
 		zfh.setRelevantSales(listOfOpenHouses.size() - rentalsCount);
 		zfh.setNeighborhoods(neighborhoods.size());
 		Ebean.update(zfh);
+		
 		
 		Logger.info("Load completed");
 		// Signal to gc

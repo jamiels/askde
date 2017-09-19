@@ -6,6 +6,7 @@
 GET     /                           controllers.HomeController.index
 GET		/loadFeed					controllers.HomeController.loadFeed
 GET		/getRandomOpenHouseByZipCode controllers.HomeController.getRandomOpenHouseByZipCode(zipCode:Integer)
+GET		/ping						controllers.HomeContrller.ping
 POST	/askde						controllers.askde.AskDESkillController.invoke
 
 # An example controller showing how to use dependency injection
