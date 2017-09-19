@@ -58,6 +58,41 @@ public class ListingsService extends BaseService {
 		return openHouses;
 	}
 	
+	public models.askde.OpenHouse getRandomizedOpenHouseByNeighborhood(String neighborhood) {
+		Logger.info("## Search request for random open house by neighborhood " + neighborhood);
+		Date currentDateTime = new Date();
+		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.where().eq("neighborhood", neighborhood.toLowerCase()).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
+		Logger.info("Matches with same neighborhood " + neighborhood + " found: " + results.size());
+		
+		if(results.size()>1) {
+			Date nextOpenHouse = results.get(0).getStartDateTime();
+			List<models.askde.OpenHouse> openHousesAtSameTime = new ArrayList<models.askde.OpenHouse>();
+			for (models.askde.OpenHouse oh : results) {
+				if(oh.getStartDateTime().equals(nextOpenHouse))
+					openHousesAtSameTime.add(oh);
+			}
+			
+			Logger.info("Multiple open houses at the earliest time: " + openHousesAtSameTime.size() + " for neighborhood " + neighborhood);
+			if(openHousesAtSameTime.size()>1) {
+				int randomItem = ThreadLocalRandom.current().nextInt(0, openHousesAtSameTime.size());
+				return openHousesAtSameTime.get(randomItem);
+			}
+		}
+		
+		if(results.size()==1) {
+			Logger.info("Only one open house in neighborhood " + neighborhood);
+			return results.get(0);
+		}
+		
+
+		if(results.size()>0) {
+			Logger.info("Going to randomize from " + results.size() + " open houses in neighborhood "  + neighborhood);
+			return results.get(ThreadLocalRandom.current().nextInt(0, results.size()));	
+		}
+		
+		Logger.info("No open houses found for neighborhood " + neighborhood);
+		return null;
+	}
 	
 	public models.askde.OpenHouse getRandomizedOpenHouseByZipCode (Integer zipCode) {
 		
