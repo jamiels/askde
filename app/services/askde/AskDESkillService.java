@@ -180,6 +180,7 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
+		Logger.info("Invoked");
 		if(ts == null || ts.getOpenHouses()==null || incomingJsonRequest==null) {
 			String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
 			Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
