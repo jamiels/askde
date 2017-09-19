@@ -34,6 +34,7 @@ import bindings.askde.listings.Listings;
 import bindings.askde.listings.OpenHouses;
 import bindings.askde.listings.OpenHouse;
 import exceptions.askde.ListingsLoadException;
+import models.askde.ZillowFeedHistory;
 import play.Configuration;
 import play.Environment;
 import play.Logger;
@@ -192,14 +193,21 @@ public class ListingsService extends BaseService {
 	}
 	
 	public void loadOpenHouses() throws ListingsLoadException {
+		ZillowFeedHistory zfh = new ZillowFeedHistory();
+		zfh.setFeedLoadStart(new Date());
+		Ebean.save(zfh);
 		Set<Integer> zipCodeWhiteList = loadZipCodes();
 		JAXBContext ctx;
 		Unmarshaller u;
 		boolean isLoadFromURLSuccessful = false;
 		Logger.info("Retrieving Zillow feed URL from config file");
 		String url = conf.getString("askde.listingsFeedURL");
-		if(url==null || url.isEmpty())
+		if(url==null || url.isEmpty()) {
+			zfh.setFailed(true);
+			zfh.setFailureCause("Feed URL not in config file or is blank");
+			Ebean.update(zfh);
 			throw new ListingsLoadException("Feed URL not in config file or is blank");
+		}
 		Logger.info("Retrieving listings feed from Zillow at URL " + url);
 		CompletionStage<WSResponse> resp =  ws.url(url)
 				.setRequestTimeout(50000)
@@ -208,14 +216,21 @@ public class ListingsService extends BaseService {
 		try {
 			ctx = JAXBContext.newInstance(Listings.class);
 		} catch (JAXBException e) {
+			zfh.setFailed(true);
+			zfh.setFailureCause(e.getMessage());
+			Ebean.update(zfh);
 			e.printStackTrace();
 			Logger.error("JAXBContext creation failed",e);
+			
 			throw new ListingsLoadException("JAXBContext creation failed. Message: " + e.getMessage());
 		}
 		try {
 			u = ctx.createUnmarshaller();
 		} catch (JAXBException e) {
 			e.printStackTrace();
+			zfh.setFailed(true);
+			zfh.setFailureCause(e.getMessage());
+			Ebean.update(zfh);
 			Logger.error("JAXBContext unmarshaller creation failed",e);
 			throw new ListingsLoadException("JAXBContext unmarshaller creation failed. Message: " + e.getMessage());			
 		}
@@ -228,6 +243,9 @@ public class ListingsService extends BaseService {
 			isLoadFromURLSuccessful = true;
 		} catch (JAXBException | InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			zfh.setFailed(true);
+			zfh.setFailureCause(e.getMessage());
+			Ebean.update(zfh);
 			Logger.error("DE Zillow feed load from Zillow failed",e);
 			Logger.info("Attempting to load from local file");
 				File f = new File("conf/DEZillowFeed.xml");
@@ -236,12 +254,18 @@ public class ListingsService extends BaseService {
 					Logger.info("Feed loaded from local file conf/DEZillowFeed.xml");
 				} catch (JAXBException e1) {
 					e.printStackTrace();
+					zfh.setFailed(true);
+					zfh.setFailureCause(e.getMessage());
+					Ebean.update(zfh);
 					Logger.error("DE Zillow feed load from local file failed",e1);
 					Logger.info("Attempting to load from S3");
 					try {
 						allListings = (Listings) u.unmarshal(AWS.S3.get("askde", "DEZillowFeed.xml"));
 					} catch (JAXBException e2) {
 						e2.printStackTrace();
+						zfh.setFailed(true);
+						zfh.setFailureCause(e.getMessage());
+						Ebean.update(zfh);
 						Logger.error("Failed to load from S3",e1);
 						Logger.info("Ask DE will operate in maintenance mode. Restart when connectivity / feeds are available");
 						throw new ListingsLoadException("All alternatives to loading feed have failed. Message: " + e.getMessage());
@@ -262,6 +286,9 @@ public class ListingsService extends BaseService {
 				f = new File("data/DEZillowFeed.xml");
 				m.marshal(allListings, f);
 			} catch (JAXBException e) {
+				zfh.setFailed(true);
+				zfh.setFailureCause("Failed to marshal feed to local file");
+				Ebean.update(zfh);
 				Logger.error("Failed to marshal feed to local file",e);
 				e.printStackTrace();
 			}	
@@ -398,6 +425,16 @@ public class ListingsService extends BaseService {
 			Logger.error("Failed to write neighborhoods",e);
 		}
 
+		zfh.setFailed(false);
+		zfh.setFeedLoadComplete(new Date());
+		zfh.setTotalListings(allListings.getListing().size());
+		zfh.setRelevantListings(listOfOpenHouses.size());
+		zfh.setDiscardedListings(discardedListings.getListing().size());
+		zfh.setRelevantRentals(rentalsCount);
+		zfh.setRelevantSales(listOfOpenHouses.size() - rentalsCount);
+		zfh.setNeighborhoods(neighborhoods.size());
+		Ebean.update(zfh);
+		
 		Logger.info("Load completed");
 		// Signal to gc
 		neighborhoods = null;
