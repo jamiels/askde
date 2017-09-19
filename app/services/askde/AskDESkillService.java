@@ -199,8 +199,9 @@ public class AskDESkillService extends BaseAlexaService {
 		if(oh==null)
 			return packageResponse ("There are no open houses in the " + neighborhood + " neigbhorhood");
 		
-		
-		return packageResponse("The neighborhood was " + neighborhood);
+		String message = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+		message += convertPropertyDescriptionToSpeech(oh);
+		return packageResponse(message);
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
