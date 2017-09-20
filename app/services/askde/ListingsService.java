@@ -224,6 +224,7 @@ public class ListingsService extends BaseService {
 		neighborhood = neighborhood.replace("hastings-on-hudson", "hastings on hudson");
 		neighborhood = neighborhood.replace("soho - nolita", "soho");
 		neighborhood = neighborhood.replace("garden city s.", "garden city");
+		neighborhood = neighborhood.replace("east elmhurst", "elmhurst");
 		
 		
 		

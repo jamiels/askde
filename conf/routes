@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+#Inject Raven routes
+->      /raven                				raven.Routes
+
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 GET		/loadFeed					controllers.HomeController.loadFeed

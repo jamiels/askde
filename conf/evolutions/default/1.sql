@@ -16,6 +16,18 @@ create table ad (
   constraint pk_ad primary key (id)
 );
 
+create table adjectives (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  active                        tinyint(1) default 0,
+  message                       varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_adjectives primary key (id)
+);
+
 create table app_registry (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
@@ -38,6 +50,18 @@ create table appregistry_authenticateduser (
   app_registry_id               bigint not null,
   authenticated_user_id         bigint not null,
   constraint pk_appregistry_authenticateduser primary key (app_registry_id,authenticated_user_id)
+);
+
+create table appenders (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  active                        tinyint(1) default 0,
+  message                       varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_appenders primary key (id)
 );
 
 create table audit_trail (
@@ -106,6 +130,18 @@ create table authenticated_user_user_permission (
   authenticated_user_id         bigint not null,
   user_permission_id            bigint not null,
   constraint pk_authenticated_user_user_permission primary key (authenticated_user_id,user_permission_id)
+);
+
+create table byline (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  active                        tinyint(1) default 0,
+  message                       varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_byline primary key (id)
 );
 
 create table contact_form (
@@ -179,6 +215,18 @@ create table inbox_message (
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
   constraint pk_inbox_message primary key (id)
+);
+
+create table intro (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  active                        tinyint(1) default 0,
+  message                       varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_intro primary key (id)
 );
 
 create table job (
@@ -561,9 +609,13 @@ drop index ix_test_result_u_id on test_result;
 
 drop table if exists ad;
 
+drop table if exists adjectives;
+
 drop table if exists app_registry;
 
 drop table if exists appregistry_authenticateduser;
+
+drop table if exists appenders;
 
 drop table if exists audit_trail;
 
@@ -573,6 +625,8 @@ drop table if exists authenticated_user_security_role;
 
 drop table if exists authenticated_user_user_permission;
 
+drop table if exists byline;
+
 drop table if exists contact_form;
 
 drop table if exists contact_form_forwardees;
@@ -580,6 +634,8 @@ drop table if exists contact_form_forwardees;
 drop table if exists image_meta;
 
 drop table if exists inbox_message;
+
+drop table if exists intro;
 
 drop table if exists job;
 

@@ -26,7 +26,7 @@ public class HomeController extends Controller {
 	@Inject ListingsService ls;
 	
     public Result index() {
-        return ok(index.render(ls.getOpenHouses()));
+        return ok(index.render());
     }
     
     public Result ping() {
@@ -39,7 +39,7 @@ public class HomeController extends Controller {
     		return ok("");
     	if(apiKey.equalsIgnoreCase("df39e0ee-01f1-46b3-a0dd-4c639c6a7655")) {
     		ls.loadOpenHouses();
-    		return ok(index.render(ls.getOpenHouses()));
+    		return ok(index.render());
     	}
     	return ok("");
     }
@@ -49,7 +49,7 @@ public class HomeController extends Controller {
     	List<OpenHouse> ohs = new ArrayList<OpenHouse>(1);
     	if(oh!=null)
     		ohs.add(oh);
-    	return ok(index.render(ohs));
+    	return ok(index.render());
     }
     
   

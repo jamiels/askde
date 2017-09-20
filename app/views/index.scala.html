@@ -1,17 +1,121 @@
-@(openHouses: List[models.askde.OpenHouse])
+@layout{
+    <div class="portlet light portlet-fit portlet-datatable">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">Messages</span>
+            </div>
+            <div class="btn-group pull-right">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" onchange="this.form.submit()" aria-expanded="false">Bulk Actions
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:submitBulk('fuptm')" class="submit-link">Hide</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-container">
+                <table class="table table-striped table-bordered table-hover table-checkable" id="sample_1">
+                    <thead>
+                        <tr>
+                            <th> Type </th>
+                            <th> Message </th>
+                            <th style="width:20%;"> Actions </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th> Type </th>
+                            <th> Message </th>
+                            <th>
 
-<html>
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    @for(m <- models.askde.Appenders.find.all()){
+                        <tr class="odd gradeX">
+                            <td> Adjective </td>
+                            <td>
+                                @m.getMessage()
+                            </td>
+                            <td>
+                            	@if(m.isActive()){
+                                <button class="btn btn-info">Deactivate</button>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                       }
+                    @for(m <- models.askde.Byline.find.all()){
+                        <tr class="odd gradeX">
+                            <td> Byline </td>
+                            <td>
+                                @m.getMessage()
+                            </td>
+                            <td>
+                            	@if(m.isActive()){
+                                <button class="btn btn-info">Deactivate</button>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                       }                       
+                    @for(m <- models.askde.Intro.find.all()){
+                        <tr class="odd gradeX">
+                            <td> Intro </td>
+                            <td>
+                                @m.getMessage()
+                            </td>
+                            <td>
+                            	@if(m.isActive()){
+                                <button class="btn btn-info">Deactivate</button>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                       }                       
+                    @for(m <- models.askde.Appenders.find.all()){
+                        <tr class="odd gradeX">
+                            <td> Appender </td>
+                            <td>
+                                @m.getMessage()
+                            </td>
+                            <td>
+                            	@if(m.isActive()){
+                                <button class="btn btn-info">Deactivate</button>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                       }                        
+                        <tr class="odd gradeX">
+                            <td> ABC Law Firm </td>
+                            <td>
+                                60 East 42nd Street
+                            </td>
+                            <td>
+                                <button class="btn btn-info">Activate</button>
+                                <button class="btn btn-danger">Deactivate</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
 
-<body>
 
-<table>
-	<tr><th>zip</th><th>created ts</th><th>id</th><th>lid</th><th>iscurrent</th><th>isrental?</th><th>status</th><th>address</th><th>unit #</th><th>date</th><th>start time</th><th>start dt</th><th>end time</th><th>end dt</th><th>price</th><th>nhood</th><th>city</th></tr>
-@for(o <- openHouses){
-	<tr><td>@o.getZipCode()</td><td>@o.getCreatedAt()</td><td>@o.getId()</td><td>@o.getListingID()</td><td>@o.isCurrent()</td><td>@o.isRental()<td>@o.getStatus()</td><td>@o.getAddress()</td><td>@o.getUnitNumber()</td><td>@o.getDate()</td><td>@o.getStartTime()</td><td>@o.getStartDateTime()</td><td>@o.getEndTime()</td><td>@o.getEndDateTime()</td><td>@o.getPrice()</td><td>@o.getNeighborhood()</td><td>@o.getCity()</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }
-
-</table>
-
-</body>
-
-</html>

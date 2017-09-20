@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 
 import bindings.askde.listings.Listing;
 import bindings.askde.listings.Listings;
+import models.raven.AuthenticatedUser;
 import play.Application;
 import play.Configuration;
 import play.Environment;

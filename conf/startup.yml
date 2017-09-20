@@ -1,0 +1,38 @@
+# No tabs allowed in this file
+- !!models.askde.Appenders
+    message: Also
+
+- !!models.askde.Appenders
+    message: And remember to
+
+- !!models.askde.Appenders
+    message: Also don't forget to
+
+- !!models.askde.Appenders
+    message: One more thing
+
+- !!models.askde.Appenders
+    message: One more thing before I forget
+
+- !!models.askde.Appenders
+    message: And since I have you here
+
+- !!models.askde.Appenders
+    message: And
+
+- !!models.askde.Appenders
+    message: Finally, 
+
+- !!models.askde.Appenders
+    message: Before you go
+
+- !!models.askde.Byline
+    message: visit elliman.com for the most current listings
+
+- !!models.askde.Byline
+    message: see this month's issue of the Elliman magazine
+
+- !!models.askde.Byline
+    message: Use elliman.com to look up listings using any of listing ID
+
+
