@@ -198,6 +198,10 @@ public class AdminPanelController extends BaseController {
 
     }
     
+    public Result viewSkillInvocationHistory() {
+    	return ok(skillinvocationhistory.render());
+    }
+    
     public Result submitNewPartOfSpeech() {
     	
     	return ok("");

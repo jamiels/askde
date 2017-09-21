@@ -432,6 +432,20 @@ create table site_visitor (
   constraint pk_site_visitor primary key (id)
 );
 
+create table skill_invocation (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  skill                         varchar(255),
+  request                       varchar(255),
+  response                      varchar(255),
+  device_id                     varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_skill_invocation primary key (id)
+);
+
 create table team (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
@@ -672,6 +686,8 @@ drop table if exists sms;
 drop table if exists security_role;
 
 drop table if exists site_visitor;
+
+drop table if exists skill_invocation;
 
 drop table if exists team;
 

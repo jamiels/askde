@@ -1,0 +1,51 @@
+@layout{
+
+    <div class="portlet light portlet-fit portlet-datatable">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">Last 100 Skill Requests</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-container">
+                <table class="table table-striped table-bordered table-hover table-checkable" id="sample_1">
+                    <thead>
+                        <tr>
+                            <th> Skill </th>
+                            <th> Device ID </th>
+                            <th> Request </th>
+                            <th> Response </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th> Skill </th>
+                            <th> Device ID </th>
+                            <th> Request </th>
+                            <th> Response </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    @for(o <- models.askde.SkillInvocation.getLastestHundred()){
+                        <tr class="odd gradeX">
+                            <td> @o.getSkill() </td>
+                            <td> @o.getDeviceID() </td>
+                            <td> @o.getRequest() </td>
+                            <td> @o.getResponse() </td>                            
+                        </tr>
+                       }                      
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+}{
+<script>
+    $('.listing-item').addClass('active open selected');
+    $('.skill-invocation-history-menu-item').addClass('active');
+</script>
+}

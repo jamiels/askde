@@ -11,6 +11,7 @@ GET		/viewOpenHouses				controllers.askde.AdminPanelController.viewOpenHouses
 GET		/viewZipCodes				controllers.askde.AdminPanelController.viewZipCodes
 GET		/viewNeighborhoods			controllers.askde.AdminPanelController.viewNeighborhoods
 GET		/viewFeedHistory			controllers.askde.AdminPanelController.viewFeedHistory
+GET		/viewSkillInvocationHistory controllers.askde.AdminPanelController.viewSkillInvocationHistory
 
 GET		/loadFeed					controllers.askde.AdminPanelController.loadFeed
 GET		/deactivatePartsOfSpeech	controllers.askde.AdminPanelController.deactivatePartsOfSpeech

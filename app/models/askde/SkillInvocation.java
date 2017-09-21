@@ -1,5 +1,7 @@
 package models.askde;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 
 import com.avaje.ebean.Model.Finder;
@@ -14,6 +16,10 @@ public class SkillInvocation extends BaseModel {
 	private String request;
 	private String response;
 	private String deviceID;
+	
+	public static List<SkillInvocation> getLastestHundred() {
+		return find.orderBy("createdAt desc").setMaxRows(100).findList();
+	}
 	
 	public String getSkill() {
 		return skill;
