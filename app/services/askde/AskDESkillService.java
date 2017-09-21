@@ -9,12 +9,14 @@ import javax.inject.Inject;
 
 import org.h2.util.StringUtils;
 
+import com.avaje.ebean.Ebean;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.askde.Adjective;
 import models.askde.Appender;
 import models.askde.Byline;
 import models.askde.OpenHouse;
+import models.askde.SkillInvocation;
 import play.Configuration;
 import play.Environment;
 import play.Logger;
@@ -106,13 +108,14 @@ public class AskDESkillService extends BaseAlexaService {
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
 	}
 	
+	
 	public String intentOpenHouseNearMe(JsonNode incomingJsonRequest) {
-		JsonNode c = incomingJsonRequest.findPath("consentToken");
-		JsonNode d = incomingJsonRequest.findPath("deviceId");
-		if(c==null || d==null)
+		String consentToken = getConsentToken(incomingJsonRequest);
+		String deviceId = getDeviceID(incomingJsonRequest);
+		if(consentToken==null || deviceId==null)
 			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
-		String consentToken = c.textValue();
-		String deviceId = d.textValue();
+		
+		 
 		Logger.info("Consent token: " + consentToken);
 		
 		String endpoint = "https://api.amazonalexa.com//v1/devices/"+deviceId+"/settings/address/countryAndPostalCode";
@@ -203,20 +206,28 @@ public class AskDESkillService extends BaseAlexaService {
 		intent = intent.toLowerCase();
 		Logger.info("Intent invoked: " + intent);
 		String responseMessage = null;
+		SkillInvocation si = new SkillInvocation();
 		switch(intent) {
 			case "getnextopenhousebyzipcode":
+				si.setSkill("GetNextOpenHouseByZipCode");
 				responseMessage = intentOpenHouseByZipCode(incomingJsonRequest);
 				break;
 			case "getnextopenhousebyneighborhood":
+				si.setSkill("GetNextOpenHouseByNeighborhood");
 				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
 				break;
 			case "getnextopenhousenearme":
+				si.setSkill("GetNextOpenHouseNearMe");
 				responseMessage = intentOpenHouseNearMe(incomingJsonRequest);
 				break;
 			default:
+				si.setSkill("Default");
 				responseMessage = defaultResponse(); // TODO: Change to a better message
 		}
-		
+		si.setRequest(incomingJsonRequest.toString());
+		si.setResponse(responseMessage);
+		si.setDeviceID(getDeviceID(incomingJsonRequest));
+		Ebean.save(si);
 		return responseMessage;		
 	}
 	
