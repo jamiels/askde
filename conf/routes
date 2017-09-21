@@ -5,7 +5,10 @@
 #Inject Raven routes
 ->      /raven                				raven.Routes
 
-# An example controller showing a sample home page
+GET		/login						controllers.askde.AuthenticationController.login
+POST	/authenticate				controllers.askde.AuthenticationController.authenticate
+GET		/logout						controllers.askde.AuthenticationController.logout
+
 GET     /                           controllers.askde.AdminPanelController.index
 GET		/viewOpenHouses				controllers.askde.AdminPanelController.viewOpenHouses
 GET		/viewZipCodes				controllers.askde.AdminPanelController.viewZipCodes

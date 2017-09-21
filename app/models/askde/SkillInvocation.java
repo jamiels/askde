@@ -2,6 +2,7 @@ package models.askde;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.avaje.ebean.Model.Finder;
@@ -13,7 +14,9 @@ public class SkillInvocation extends BaseModel {
 	public static Finder<Long, SkillInvocation> find = new Finder<>(SkillInvocation.class);
 	
 	private String skill;
+	@Column(columnDefinition = "TEXT")
 	private String request;
+	@Column(columnDefinition = "TEXT")
 	private String response;
 	private String deviceID;
 	

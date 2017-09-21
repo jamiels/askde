@@ -71,6 +71,12 @@
 - !!models.askde.Adjective
     message: Fabulous
     current: true
+- !!models.raven.AuthenticatedUser
+    fname: Alexa
+    lname: AskDe
+    email: alexa-askde@elliman.com
+    disabled: false
+    password: askde123
 
 
 

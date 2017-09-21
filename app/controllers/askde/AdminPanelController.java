@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import com.avaje.ebean.Ebean;
 
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import controllers.routes;
 import controllers.raven.BaseController;
 import models.askde.Adjective;
@@ -27,6 +28,8 @@ public class AdminPanelController extends BaseController {
 
 	@Inject ListingsService ls;
 	
+	
+	@SubjectPresent
     public Result index() {
         return ok(index.render());
     }
