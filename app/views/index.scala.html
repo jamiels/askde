@@ -34,11 +34,11 @@
                             </td>
                             <td>
                             	@if(m.isActive()){
-                                <button class="btn btn-info">Deactivate</button>
+                                <a href="/deactivatePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-info">Deactivate</button></a>
                                 }else{
-                                <button class="btn btn-danger">Activate</button>
+                                <a href="/activatePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-danger">Activate</button></a>
                                 }
-                                <button class="btn btn-danger">Delete</button>
+                                <a href="/deletePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-danger">Delete</button></a>
                             </td>
                         </tr>
                        }
@@ -50,11 +50,11 @@
                             </td>
                             <td>
                             	@if(m.isActive()){
-                                <a href="/deactivateMessage"><button class="btn btn-info">Deactivate</button></a>
+                                <a href="/deactivatePartsOfSpeech?type=byline&uuid=@m.getUuid()"><button class="btn btn-info">Deactivate</button></a>
                                 }else{
-                                <button class="btn btn-danger">Activate</button>
+                                <a href="/activatePartsOfSpeech?type=byline&uuid=@m.getUuid()"><button class="btn btn-danger">Activate</button></a>
                                 }
-                                <button class="btn btn-danger">Delete</button>
+                                <a href="/deletePartsOfSpeech?type=byline&uuid=@m.getUuid()"><button class="btn btn-danger">Delete</button></a>
                             </td>
                         </tr>
                        }                       
@@ -67,11 +67,11 @@
                             </td>
                             <td>
                             	@if(m.isActive()){
-                                <button class="btn btn-info">Deactivate</button>
+                                <a href="/deactivatePartsOfSpeech?type=adjective&uuid=@m.getUuid()"><button class="btn btn-info">Deactivate</button></a>
                                 }else{
-                                <button class="btn btn-danger">Activate</button>
+                                <a href="/activatePartsOfSpeech?type=adjective&uuid=@m.getUuid()"><button class="btn btn-danger">Activate</button></a>
                                 }
-                                <button class="btn btn-danger">Delete</button>
+                                <a href="/deletePartsOfSpeech?type=adjective&uuid=@m.getUuid()"><button class="btn btn-danger">Delete</button></a>
                             </td>
                         </tr>
                        }                        

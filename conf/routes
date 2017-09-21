@@ -13,7 +13,11 @@ GET		/viewNeighborhoods			controllers.askde.AdminPanelController.viewNeighborhoo
 GET		/viewFeedHistory			controllers.askde.AdminPanelController.viewFeedHistory
 
 GET		/loadFeed					controllers.askde.AdminPanelController.loadFeed
+GET		/deactivatePartsOfSpeech	controllers.askde.AdminPanelController.deactivatePartsOfSpeech
+GET		/activatePartsOfSpeech		controllers.askde.AdminPanelController.activatePartsOfSpeech
+GET		/deletePartsOfSpeech		controllers.askde.AdminPanelController.deletePartsOfSpeech
 
+POST	/submitNewPartOfSpeech		controllers.askde.AdminPanelController.submitNewPartOfSpeech
 
 POST	/askde						controllers.askde.AskDESkillController.invoke
 

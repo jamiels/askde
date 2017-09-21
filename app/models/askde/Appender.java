@@ -13,5 +13,9 @@ public class Appender extends BaseWord {
 	public static List<Appender> getAllCurrent() {
 		return find.where().eq("current", true).findList();
 	}
+	
+	public static Appender findByUUID(String uuid) {
+		return find.where().eq("uuid", uuid).findUnique();
+	}
 
 }

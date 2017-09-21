@@ -13,4 +13,8 @@ public class Byline extends BaseWord {
 	public static List<Byline> getAllCurrent() {
 		return find.where().eq("current", true).findList();
 	}
+	
+	public static Byline findByUUID(String uuid) {
+		return find.where().eq("uuid", uuid).findUnique();
+	}
 }

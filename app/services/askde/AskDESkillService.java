@@ -1,7 +1,5 @@
 package services.askde;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -11,7 +9,12 @@ import javax.inject.Inject;
 
 import org.h2.util.StringUtils;
 
-import play.Application;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import models.askde.Adjective;
+import models.askde.Appender;
+import models.askde.Byline;
+import models.askde.OpenHouse;
 import play.Configuration;
 import play.Environment;
 import play.Logger;
@@ -19,12 +22,6 @@ import play.inject.ApplicationLifecycle;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import models.askde.Adjective;
-import models.askde.Appender;
-import models.askde.Byline;
-import models.askde.OpenHouse;
 
 public class AskDESkillService extends BaseAlexaService {
 	
@@ -41,20 +38,33 @@ public class AskDESkillService extends BaseAlexaService {
 		
 	}
 	
-	public String getMarketing() {
-		List<Appender> appenders = Appender.getAllCurrent();
-		List<Byline> bylines = Byline.getAllCurrent();
-		Appender appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
-		Byline byline = bylines.get(ThreadLocalRandom.current().nextInt(0, bylines.size()));
-		String message = appender.getMessage() + " " + byline.getMessage() + "!";
-		
-		return message;
+	public String addMarketing(String message) {
+		return message + "<break time='2s'/>" + generateMarketing();
 	}
 	
+	public String generateMarketing() {
+		List<Appender> appenders = Appender.getAllCurrent();
+		List<Byline> bylines = Byline.getAllCurrent();
+		if(bylines.size()>0 && appenders.size()>0) {
+			Appender appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
+			Byline byline = bylines.get(ThreadLocalRandom.current().nextInt(0, bylines.size()));
+			String message = appender.getMessage() + "<break time='1s'/> " + byline.getMessage() + "!";
+			return message;
+		} else
+			return "";
+	}
+	
+	public String getAdjective() {
+		List<Adjective> adjectives = Adjective.getAllCurrent();
+		if(adjectives.size()>0)
+			return adjectives.get(ThreadLocalRandom.current().nextInt(0, adjectives.size())).getMessage();
+		else
+			return "";
+	}	
 	
 	public String convertPropertyDescriptionToSpeech(OpenHouse oh) {
-		List<Adjective> adjectives = Adjective.getAllCurrent();
-		String description = "This " + adjectives.get(ThreadLocalRandom.current().nextInt(0, adjectives.size())).getMessage() + " ";
+		String adjective = getAdjective();
+		String description = "This " + adjective + " ";
 		if(oh.isRental())
 			description += "rental is a ";
 		else
@@ -68,21 +78,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		description+= bedrooms + " and " + oh.getBaths() + " bathroom ";
 		description+= "located in " + oh.getNeighborhood() + ". ";
-		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>. <break time='1s'/>";
-		
-		
-		description+= getMarketing();
-/*		String agentsDescription = oh.getDescription();
-		
-		int iend = agentsDescription.indexOf("."); 
-		
-
-		if (iend != -1) 
-			agentsDescription = agentsDescription.substring(0 , iend);
-		
-		description += ". " + agentsDescription;*/
-		
-		
+		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";		
 		return description;
 		
 	}
@@ -99,7 +95,7 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
-		return packageResponse(message);		
+		return message;		
 	}
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
@@ -107,7 +103,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(!StringUtils.isNumber(zipCode)) {
 			return packageResponse("The zip code was not found or came across as incomplete, please try again");
 		}
-		return intentOpenHouseByZipCode(zipCode);
+		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
 	}
 	
 	public String intentOpenHouseNearMe(JsonNode incomingJsonRequest) {
@@ -148,7 +144,7 @@ public class AskDESkillService extends BaseAlexaService {
 				return defaultResponse();
 			
 			Logger.info("Pulling up an open house listing");
-			return intentOpenHouseByZipCode(zipCode);
+			return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
 			
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
@@ -157,7 +153,6 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 	}
 	
-
 
 	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
 		String intent = getIntent(incomingJsonRequest);
@@ -185,7 +180,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		String message = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
 		message += convertPropertyDescriptionToSpeech(oh);
-		return packageResponse(message);
+		return packageResponse(addMarketing(message));
 	}
 	
 	public String invoke(JsonNode incomingJsonRequest) {
@@ -229,7 +224,7 @@ public class AskDESkillService extends BaseAlexaService {
 		String responseMessage = conf.getString("askde.messageIfListingsDown");
 		if(responseMessage==null) 
 			responseMessage="Hi, I couldn't get what you said, please repeat that!";
-		return packageResponse(responseMessage);
+		return packageResponse(addMarketing(responseMessage));
 	}
 		
 

@@ -12,4 +12,8 @@ public class Adjective extends BaseWord {
 	public static List<Adjective> getAllCurrent() {
 		return find.where().eq("current", true).findList();
 	}
+	
+	public static Adjective findByUUID(String uuid) {
+		return find.where().eq("uuid", uuid).findUnique();
+	}
 }

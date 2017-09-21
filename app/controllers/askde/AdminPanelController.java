@@ -9,7 +9,13 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.avaje.ebean.Ebean;
+
+import controllers.routes;
 import controllers.raven.BaseController;
+import models.askde.Adjective;
+import models.askde.Appender;
+import models.askde.Byline;
 import models.askde.Neighborhood;
 import models.askde.OpenHouse;
 import play.Logger;
@@ -36,9 +42,9 @@ public class AdminPanelController extends BaseController {
     		return ok("");
     	if(apiKey.equalsIgnoreCase("df39e0ee-01f1-46b3-a0dd-4c639c6a7655")) {
     		ls.loadOpenHouses();
-    		return ok(index.render());
+    		return redirect(controllers.askde.routes.AdminPanelController.viewFeedHistory());
     	}
-    	return ok("");
+    	return redirect(controllers.askde.routes.AdminPanelController.viewFeedHistory());
     }
     
     public Result viewZipCodes() {
@@ -73,12 +79,128 @@ public class AdminPanelController extends BaseController {
     public Result viewFeedHistory() {
     	return ok(feedhistory.render());
     }
- 
-/*    public Result getRandomOpenHouseByZipCode(Integer zipCode) {
-    	OpenHouse oh = ls.getRandomizedOpenHouseByZipCode(zipCode);
-    	List<OpenHouse> ohs = new ArrayList<OpenHouse>(1);
-    	if(oh!=null)
-    		ohs.add(oh);
-    	return ok(index.render());
-    }*/
+    
+    
+    public Result deactivatePartsOfSpeech() {
+    	String type = request().getQueryString("type");
+    	if(type==null || type.isEmpty())
+    		return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	String uuid = request().getQueryString("uuid");
+    	if(uuid==null || uuid.isEmpty())
+			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	switch(type.toLowerCase().trim()) {
+    		case "appender":
+    			Appender a = Appender.findByUUID(uuid);
+    			if(a==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			a.setActive(false);
+    			Ebean.update(a);
+    			break;
+    		case "byline":
+    			Byline b = Byline.findByUUID(uuid);
+    			if(b==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			b.setActive(false);
+    			Ebean.update(b);
+    			break;
+    		case "adjective":
+    			Adjective adj = Adjective.findByUUID(uuid);
+    			if(adj==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			adj.setActive(false);
+    			Ebean.update(adj);
+    			break;
+    		default:
+    			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	}
+    	
+    	return redirect(controllers.askde.routes.AdminPanelController.index());
+    			
+    }
+    
+    public Result activatePartsOfSpeech() {
+    	String type = request().getQueryString("type");
+    	if(type==null || type.isEmpty())
+    		return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	String uuid = request().getQueryString("uuid");
+    	if(uuid==null || uuid.isEmpty())
+			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	switch(type.toLowerCase().trim()) {
+    		case "appender":
+    			Appender a = Appender.findByUUID(uuid);
+    			if(a==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			a.setActive(true);
+    			Ebean.update(a);
+    			break;
+    		case "byline":
+    			Byline b = Byline.findByUUID(uuid);
+    			if(b==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			b.setActive(true);
+    			Ebean.update(b);
+    			break;
+    		case "adjective":
+    			Adjective adj = Adjective.findByUUID(uuid);
+    			if(adj==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			adj.setActive(true);
+    			Ebean.update(adj);
+    			break;
+    		default:
+    			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	}
+    	
+    	return redirect(controllers.askde.routes.AdminPanelController.index());
+    			
+    }    
+
+    public Result deletePartsOfSpeech() {
+    	String type = request().getQueryString("type");
+    	if(type==null || type.isEmpty())
+    		return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	String uuid = request().getQueryString("uuid");
+    	if(uuid==null || uuid.isEmpty())
+			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	
+    	switch(type.toLowerCase().trim()) {
+    		case "appender":
+    			Appender a = Appender.findByUUID(uuid);
+    			if(a==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			a.setCurrent(false);
+    			Ebean.update(a);
+    			break;
+    		case "byline":
+    			Byline b = Byline.findByUUID(uuid);
+    			if(b==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			b.setCurrent(false);
+    			Ebean.update(b);
+    			break;
+    		case "adjective":
+    			Adjective adj = Adjective.findByUUID(uuid);
+    			if(adj==null)
+    				return redirect(controllers.askde.routes.AdminPanelController.index());
+    			adj.setCurrent(false);
+    			Ebean.update(adj);
+    			break;
+    		default:
+    			return redirect(controllers.askde.routes.AdminPanelController.index());
+    	}
+    	
+    	return redirect(controllers.askde.routes.AdminPanelController.index());
+
+    }
+    
+    public Result submitNewPartOfSpeech() {
+    	
+    	return ok("");
+    }
+
 }
