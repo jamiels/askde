@@ -34,7 +34,9 @@ import bindings.askde.listings.Listings;
 import bindings.askde.listings.OpenHouses;
 import bindings.askde.listings.OpenHouse;
 import exceptions.askde.ListingsLoadException;
+import models.askde.Neighborhood;
 import models.askde.ZillowFeedHistory;
+import models.askde.ZipCode;
 import play.Configuration;
 import play.Environment;
 import play.Logger;
@@ -143,8 +145,34 @@ public class ListingsService extends BaseService {
 			retu
 	}*/
 	
-	public Set<Integer> loadZipCodes() {
-		Set<Integer> zipCodeWhiteList = new HashSet<Integer>(450);
+	public void loadCanonicalNeighborhoods() {
+		Logger.info("Loading neighborhoods from data/CanonicalNeighborhoods.csv");
+		BufferedReader br = null;
+        String line = "";
+        try {
+			br = new BufferedReader(new FileReader("data/CanonicalNeighborhoods.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        List<Neighborhood> ns = new ArrayList<Neighborhood>(600);
+        Neighborhood n = null;
+        try {
+			while ((line = br.readLine()) != null) {	
+				String[] arrayLine = line.split(",");
+				n = new Neighborhood();
+				n.setName(expandNeighborhood(arrayLine[1]).toLowerCase().trim());
+				ns.add(n);
+			}
+			Ebean.saveAll(ns);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        Logger.info("Canonical neighborhoods loaded: " + Neighborhood.find.findRowCount());
+	}
+	
+	public void loadZipCodes() {
 		Logger.info("Loading zip codes from data/ZipCodeWhiteList.csv");
 		BufferedReader br = null;
         String line = "";
@@ -154,17 +182,23 @@ public class ListingsService extends BaseService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+        Integer zip = null;
+        ZipCode zipCode =  null;
+        List<ZipCode> zs = new ArrayList<ZipCode>(400);
         try {
 			while ((line = br.readLine()) != null) {	
 				String[] arrayLine = line.split(",");
-				zipCodeWhiteList.add(Integer.valueOf(arrayLine[0]));
+				zip = Integer.valueOf(arrayLine[0]);
+				zipCode = new ZipCode();
+				zipCode.setZipCode(zip);
+				zs.add(zipCode);
 			}
+			Ebean.saveAll(zs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        Logger.info("Zip codes loaded: " + zipCodeWhiteList.size());
-        return zipCodeWhiteList;
+        Logger.info("Zip codes loaded: " + zs.size());
+   
 	}
 	
 	private boolean checkListingIsClean(Listing l) {
@@ -226,45 +260,47 @@ public class ListingsService extends BaseService {
 		neighborhood = neighborhood.replace("garden city s.", "garden city");
 		neighborhood = neighborhood.replace("east elmhurst", "elmhurst");
 		
-		
-		
 		neighborhood = neighborhood.replace("huntington sta", "huntington station");
-		neighborhood = neighborhood.replaceAll("pt.jefferson sta", "port jefferson station");
-		neighborhood = neighborhood.replaceAll("pt.jefferson vil", "port jefferson village"); 
-		neighborhood = neighborhood.replaceAll("quiogue","quogue");
-		neighborhood = neighborhood.replaceAll("quogue north","quogue");
-		neighborhood = neighborhood.replaceAll("quogue south","quogue");
-		neighborhood = neighborhood.replaceAll("rochaway beach", "rockaway beach");
-		neighborhood = neighborhood.replaceAll("rochaway park", "rockaway park");
-		neighborhood = neighborhood.replaceAll("sagaponack north", "sagaponack");
-		neighborhood = neighborhood.replaceAll("sagaponack south", "sagaponack");
-		neighborhood = neighborhood.replaceAll("shelter island h", "shelter island heights");
-		neighborhood = neighborhood.replaceAll("richmond hill south", "richmond hill");
-		neighborhood = neighborhood.replaceAll("richmond hill north", "richmond hill");
-		neighborhood = neighborhood.replaceAll("queens village south", "queens village");
-		neighborhood = neighborhood.replaceAll("queens village north", "queens village");		
-		neighborhood = neighborhood.replaceAll("amagansett north", "amagansett");
-		neighborhood = neighborhood.replaceAll("amagansett south", "amagansett");
-		neighborhood = neighborhood.replaceAll("amagansett dunes", "amagansett");
-		neighborhood = neighborhood.replaceAll("bellerose terr ", "bellerose terrace");
-		neighborhood = neighborhood.replaceAll("cold spring hrbr", "cold spring harbor");
-		neighborhood = neighborhood.replaceAll("e atlantic beach", "east atlantic beach");
-		neighborhood = neighborhood.replaceAll("east hampton northwest", "east hampton");
-		neighborhood = neighborhood.replaceAll("east hampton south", "east hampton");
-		neighborhood = neighborhood.replaceAll("eh north", "east hampton");
-		neighborhood = neighborhood.replaceAll("flatiron district", "flatiron");
-		neighborhood = neighborhood.replaceAll("fresh meadow", "fresh meadows");
-		neighborhood = neighborhood.replaceAll("great neck est", "great neck");
-		neighborhood = neighborhood.replaceAll("great neck east", "great neck");
+		neighborhood = neighborhood.replace("pt.jefferson sta", "port jefferson station");
+		neighborhood = neighborhood.replace("pt.jefferson vil", "port jefferson village"); 
+		neighborhood = neighborhood.replace("quiogue","quogue");
+		neighborhood = neighborhood.replace("quogue north","quogue");
+		neighborhood = neighborhood.replace("quogue south","quogue");
+		neighborhood = neighborhood.replace("rochaway beach", "rockaway beach");
+		neighborhood = neighborhood.replace("rochaway park", "rockaway park");
+		neighborhood = neighborhood.replace("sagaponack north", "sagaponack");
+		neighborhood = neighborhood.replace("sagaponack south", "sagaponack");
+		neighborhood = neighborhood.replace("shelter island h", "shelter island heights");
+		neighborhood = neighborhood.replace("richmond hill south", "richmond hill");
+		neighborhood = neighborhood.replace("richmond hill north", "richmond hill");
+		neighborhood = neighborhood.replace("queens village south", "queens village");
+		neighborhood = neighborhood.replace("queens village north", "queens village");		
+		neighborhood = neighborhood.replace("amagansett north", "amagansett");
+		neighborhood = neighborhood.replace("amagansett south", "amagansett");
+		neighborhood = neighborhood.replace("amagansett dunes", "amagansett");
+		neighborhood = neighborhood.replace("bellerose terr ", "bellerose terrace");
+		neighborhood = neighborhood.replace("cold spring hrbr", "cold spring harbor");
+		neighborhood = neighborhood.replace("e atlantic beach", "east atlantic beach");
+		neighborhood = neighborhood.replace("east hampton northwest", "east hampton");
+		neighborhood = neighborhood.replace("east hampton south", "east hampton");
+		neighborhood = neighborhood.replace("east hampton nw", "east hampton");
+		neighborhood = neighborhood.replace("eh north", "east hampton");
+		neighborhood = neighborhood.replace("flatiron district", "flatiron");
+		neighborhood = neighborhood.replace("fresh meadow", "fresh meadows");
+		neighborhood = neighborhood.replace("great neck est", "great neck");
+		neighborhood = neighborhood.replace("great neck east", "great neck");
+		neighborhood = neighborhood.replace("bed stuy", "bedford stuyvesant");
+		neighborhood = neighborhood.replace("gramercy - union square", "gramercy");
 		
-		neighborhood = neighborhood.replaceAll("jamaica north", "jamaica");
-		neighborhood = neighborhood.replaceAll("jamaica south", "jamaica");
-		neighborhood = neighborhood.replaceAll("westhampton beach north", "west hampton beach");
-		neighborhood = neighborhood.replaceAll("westhampton beach south", "west hampton beach");
 		
-		neighborhood = neighborhood.replaceAll("westhampton dunes", "west hampton");
-		neighborhood = neighborhood.replaceAll("westhampton north", "west hampton");
-		neighborhood = neighborhood.replaceAll("westhampton south", "west hampton");
+		neighborhood = neighborhood.replace("jamaica north", "jamaica");
+		neighborhood = neighborhood.replace("jamaica south", "jamaica");
+		neighborhood = neighborhood.replace("westhampton beach north", "west hampton beach");
+		neighborhood = neighborhood.replace("westhampton beach south", "west hampton beach");
+		
+		neighborhood = neighborhood.replace("westhampton dunes", "west hampton");
+		neighborhood = neighborhood.replace("westhampton north", "west hampton");
+		neighborhood = neighborhood.replace("westhampton south", "west hampton");
 		
 		
 		
@@ -276,7 +312,11 @@ public class ListingsService extends BaseService {
 		ZillowFeedHistory zfh = new ZillowFeedHistory();
 		zfh.setFeedLoadStart(new Date());
 		Ebean.save(zfh);
-		Set<Integer> zipCodeWhiteList = loadZipCodes();
+		List<ZipCode> zips = ZipCode.find.all();
+		Set<Integer> zipCodeWhiteList = new HashSet<Integer>();
+		for(ZipCode z : zips)
+			zipCodeWhiteList.add(z.getZipCode());
+		
 		JAXBContext ctx;
 		Unmarshaller u;
 		boolean isLoadFromURLSuccessful = false;
@@ -520,7 +560,6 @@ public class ListingsService extends BaseService {
 		// Signal to gc
 		neighborhoods = null;
 		listingsWithOpenHouses = null;
-		zipCodeWhiteList = null;
 		listOfOpenHouses = null;
 		allListings = null;
 		discardedListings = null;

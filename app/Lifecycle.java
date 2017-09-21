@@ -5,6 +5,8 @@ import javax.inject.Singleton;
 
 import bindings.askde.listings.Listing;
 import bindings.askde.listings.Listings;
+import models.askde.Neighborhood;
+import models.askde.ZipCode;
 import models.raven.AuthenticatedUser;
 import play.Application;
 import play.Configuration;
@@ -22,7 +24,16 @@ public class Lifecycle extends BaseLifecycle {
 	public Lifecycle(Environment env, Configuration conf, Application app, ApplicationLifecycle al, ListingsService ls) {
 		super(env, conf, app, al);
 	
-		//ls.loadOpenHouses();
+		if(Neighborhood.find.findRowCount() < 1) {
+			Logger.info("Loading neighborhoods");
+			ls.loadCanonicalNeighborhoods();
+		}
+			
+		
+		if(ZipCode.find.findRowCount() < 1) {
+			Logger.info("Loading zip codes");
+			ls.loadZipCodes();
+		}
 		
 		al.addStopHook(() -> {
 			return CompletableFuture.completedFuture(null);

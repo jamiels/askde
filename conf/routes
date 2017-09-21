@@ -6,10 +6,15 @@
 ->      /raven                				raven.Routes
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-GET		/loadFeed					controllers.HomeController.loadFeed
-GET		/getRandomOpenHouseByZipCode controllers.HomeController.getRandomOpenHouseByZipCode(zipCode:Integer)
-GET		/ping						controllers.HomeController.ping
+GET     /                           controllers.askde.AdminPanelController.index
+GET		/viewOpenHouses				controllers.askde.AdminPanelController.viewOpenHouses
+GET		/viewZipCodes				controllers.askde.AdminPanelController.viewZipCodes
+GET		/viewNeighborhoods			controllers.askde.AdminPanelController.viewNeighborhoods
+GET		/viewFeedHistory			controllers.askde.AdminPanelController.viewFeedHistory
+
+GET		/loadFeed					controllers.askde.AdminPanelController.loadFeed
+
+
 POST	/askde						controllers.askde.AskDESkillController.invoke
 
 # An example controller showing how to use dependency injection

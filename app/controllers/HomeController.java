@@ -23,35 +23,6 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-	@Inject ListingsService ls;
-	
-    public Result index() {
-        return ok(index.render());
-    }
-    
-    public Result ping() {
-    	return ok("pong");
-    }
-    
-    public Result loadFeed() {
-    	String apiKey = request().getQueryString("apiKey");
-    	if(apiKey==null || apiKey.isEmpty())
-    		return ok("");
-    	if(apiKey.equalsIgnoreCase("df39e0ee-01f1-46b3-a0dd-4c639c6a7655")) {
-    		ls.loadOpenHouses();
-    		return ok(index.render());
-    	}
-    	return ok("");
-    }
-    
-    public Result getRandomOpenHouseByZipCode(Integer zipCode) {
-    	OpenHouse oh = ls.getRandomizedOpenHouseByZipCode(zipCode);
-    	List<OpenHouse> ohs = new ArrayList<OpenHouse>(1);
-    	if(oh!=null)
-    		ohs.add(oh);
-    	return ok(index.render());
-    }
-    
-  
+
 
 }

@@ -1,38 +1,77 @@
 # No tabs allowed in this file
-- !!models.askde.Appenders
+- !!models.raven.AppRegistry
+    appName: Alexa Ask Douglas Elliman
+    current: true
+- !!models.askde.Appender
     message: Also
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: And remember to
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: Also don't forget to
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: One more thing
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: One more thing before I forget
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: And since I have you here
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: And
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: Finally, 
-
-- !!models.askde.Appenders
+    current: true
+- !!models.askde.Appender
     message: Before you go
-
+    current: true
 - !!models.askde.Byline
     message: visit elliman.com for the most current listings
-
+    current: true
 - !!models.askde.Byline
     message: see this month's issue of the Elliman magazine
-
+    current: true
 - !!models.askde.Byline
     message: Use elliman.com to look up listings using any of listing ID
+    current: true
+- !!models.askde.Adjective
+    message: Beautiful
+    current: true
+- !!models.askde.Adjective
+    message: Gorgeous
+    current: true
+- !!models.askde.Adjective
+    message: Stunning
+    current: true
+- !!models.askde.Adjective
+    message: Exquisite
+    current: true
+- !!models.askde.Adjective
+    message: Spacious
+    current: true
+- !!models.askde.Adjective
+    message: Lovely
+    current: true
+- !!models.askde.Adjective
+    message: Fantastic
+    current: true
+- !!models.askde.Adjective
+    message: Marvelous
+    current: true
+- !!models.askde.Adjective
+    message: Dreamy
+    current: true
+- !!models.askde.Adjective
+    message: One of a kind
+    current: true
+- !!models.askde.Adjective
+    message: Fabulous
+    current: true
+
+
 
 

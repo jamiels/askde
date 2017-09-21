@@ -1,5 +1,7 @@
 package models.askde;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 
 import com.avaje.ebean.Model.Finder;
@@ -8,5 +10,7 @@ import com.avaje.ebean.Model.Finder;
 public class Byline extends BaseWord {
 	public static Finder<Long, Byline> find = new Finder<>(Byline.class);
 	
-
+	public static List<Byline> getAllCurrent() {
+		return find.where().eq("current", true).findList();
+	}
 }

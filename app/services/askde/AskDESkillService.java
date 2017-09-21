@@ -21,6 +21,9 @@ import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import models.askde.Adjective;
+import models.askde.Appender;
+import models.askde.Byline;
 import models.askde.OpenHouse;
 
 public class AskDESkillService extends BaseAlexaService {
@@ -28,49 +31,30 @@ public class AskDESkillService extends BaseAlexaService {
 
 	private ListingsService ts;
 	private WSClient ws;
-	private List<String> adjectives = new ArrayList<String>(10);
-	private List<String> marketings = new ArrayList<String>(10);
-	private List<String> appenders = new ArrayList<String>(10);
+
 
 	@Inject
 	public AskDESkillService(Environment env, Configuration conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
 		super(env, conf, al);
 		this.ts = ts;
 		this.ws = ws;
-		adjectives.add("Beautiful");
-		adjectives.add("Gorgeous");
-		adjectives.add("Stunning");
-		adjectives.add("Exquisite");
-		adjectives.add("Spacious");
-		adjectives.add("Lovely");
-		adjectives.add("Fantastic");
-		
-		appenders.add("Oh! yes, ");
-		appenders.add("Also");
-		appenders.add("and do me a favor and");
-		appenders.add("and remember to");
-		appenders.add("don't forget to");
-		appenders.add("before I forget");
-		appenders.add("one more thing");
-		
-		marketings.add("visit elliman.com for the most current listings");
-		marketings.add("see this month's issue of the Elliman magazine");
-		marketings.add("Pick up a copy of our latest market valuation report");
-		
 		
 	}
 	
 	public String getMarketing() {
-		String appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
-		String marketing = marketings.get(ThreadLocalRandom.current().nextInt(0, marketings.size()));
-		String message = appender + " " + marketing + "!";
+		List<Appender> appenders = Appender.getAllCurrent();
+		List<Byline> bylines = Byline.getAllCurrent();
+		Appender appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
+		Byline byline = bylines.get(ThreadLocalRandom.current().nextInt(0, bylines.size()));
+		String message = appender.getMessage() + " " + byline.getMessage() + "!";
 		
 		return message;
 	}
 	
 	
 	public String convertPropertyDescriptionToSpeech(OpenHouse oh) {
-		String description = "This " + adjectives.get(ThreadLocalRandom.current().nextInt(0, adjectives.size())) + " ";
+		List<Adjective> adjectives = Adjective.getAllCurrent();
+		String description = "This " + adjectives.get(ThreadLocalRandom.current().nextInt(0, adjectives.size())).getMessage() + " ";
 		if(oh.isRental())
 			description += "rental is a ";
 		else

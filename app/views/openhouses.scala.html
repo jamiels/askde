@@ -1,0 +1,67 @@
+@(openHouses: List[models.askde.OpenHouse])
+@layout{
+
+    <div class="portlet light portlet-fit portlet-datatable">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">Open Houses</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-container">
+                <table class="table table-striped table-bordered table-hover table-checkable" id="sample_1">
+                    <thead>
+                        <tr>
+                            <th> Listing ID </th>
+                            <th> Address </th>
+                            <th> Unit # </th>
+                            <th> Rental </th>
+                            <th> Open House Date </th>
+                            <th> Start </th>
+                            <th> End </th>
+                            <th> Price </th>
+                            <th> Neighborhood </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th> Listing ID </th>
+                            <th> Address </th>
+                            <th> Unit # </th>
+                            <th> Rental </th>
+                            <th> Open House Date </th>
+                            <th> Start </th>
+                            <th> End </th>
+                            <th> Price </th>
+                            <th> Neighborhood </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    @for(o <- openHouses){
+                        <tr class="odd gradeX">
+                            <td> @o.getListingID() </td>
+                            <td> @o.getAddress() </td>
+                            <td> @o.getUnitNumber() </td>
+                            <td> @o.isRental() </td>
+                            <td> @o.getDate() </td>
+                            <td> @o.getStartTime() </td>
+                            <td> @o.getEndTime() </td>
+                            <td> @o.getPrice()</td>
+                            <td> @o.getNeighborhood()</td>
+                        </tr>
+                       }                      
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+}{
+<script>
+    $('.listing-item').addClass('active open selected');
+    $('.open-houses-menu-item').addClass('active');
+</script>
+}

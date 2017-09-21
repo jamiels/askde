@@ -16,7 +16,7 @@ create table ad (
   constraint pk_ad primary key (id)
 );
 
-create table adjectives (
+create table adjective (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
   current                       tinyint(1) default 0,
@@ -25,7 +25,7 @@ create table adjectives (
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
-  constraint pk_adjectives primary key (id)
+  constraint pk_adjective primary key (id)
 );
 
 create table app_registry (
@@ -52,7 +52,7 @@ create table appregistry_authenticateduser (
   constraint pk_appregistry_authenticateduser primary key (app_registry_id,authenticated_user_id)
 );
 
-create table appenders (
+create table appender (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
   current                       tinyint(1) default 0,
@@ -61,7 +61,7 @@ create table appenders (
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
-  constraint pk_appenders primary key (id)
+  constraint pk_appender primary key (id)
 );
 
 create table audit_trail (
@@ -217,18 +217,6 @@ create table inbox_message (
   constraint pk_inbox_message primary key (id)
 );
 
-create table intro (
-  id                            bigint auto_increment not null,
-  uuid                          varchar(255),
-  current                       tinyint(1) default 0,
-  active                        tinyint(1) default 0,
-  message                       varchar(255),
-  version                       bigint not null,
-  created_at                    DATETIME not null,
-  updated_at                    DATETIME not null,
-  constraint pk_intro primary key (id)
-);
-
 create table job (
   id                            bigint auto_increment not null,
   uuid                          varchar(255),
@@ -270,6 +258,17 @@ create table motd (
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
   constraint pk_motd primary key (id)
+);
+
+create table neighborhood (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  name                          varchar(255),
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_neighborhood primary key (id)
 );
 
 create table note (
@@ -516,6 +515,17 @@ create table zillow_feed_history (
   constraint pk_zillow_feed_history primary key (id)
 );
 
+create table zip_code (
+  id                            bigint auto_increment not null,
+  uuid                          varchar(255),
+  current                       tinyint(1) default 0,
+  zip_code                      integer,
+  version                       bigint not null,
+  created_at                    DATETIME not null,
+  updated_at                    DATETIME not null,
+  constraint pk_zip_code primary key (id)
+);
+
 alter table appregistry_authenticateduser add constraint fk_appregistry_authenticateduser_app_registry foreign key (app_registry_id) references app_registry (id) on delete restrict on update restrict;
 create index ix_appregistry_authenticateduser_app_registry on appregistry_authenticateduser (app_registry_id);
 
@@ -609,13 +619,13 @@ drop index ix_test_result_u_id on test_result;
 
 drop table if exists ad;
 
-drop table if exists adjectives;
+drop table if exists adjective;
 
 drop table if exists app_registry;
 
 drop table if exists appregistry_authenticateduser;
 
-drop table if exists appenders;
+drop table if exists appender;
 
 drop table if exists audit_trail;
 
@@ -635,13 +645,13 @@ drop table if exists image_meta;
 
 drop table if exists inbox_message;
 
-drop table if exists intro;
-
 drop table if exists job;
 
 drop table if exists login_audit;
 
 drop table if exists motd;
+
+drop table if exists neighborhood;
 
 drop table if exists note;
 
@@ -674,4 +684,6 @@ drop table if exists user_permission;
 drop table if exists word_list;
 
 drop table if exists zillow_feed_history;
+
+drop table if exists zip_code;
 

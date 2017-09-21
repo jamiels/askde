@@ -5,16 +5,6 @@
                 <i class="icon-settings font-dark"></i>
                 <span class="caption-subject font-dark sbold uppercase">Messages</span>
             </div>
-            <div class="btn-group pull-right">
-                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" onchange="this.form.submit()" aria-expanded="false">Bulk Actions
-                    <i class="fa fa-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="javascript:submitBulk('fuptm')" class="submit-link">Hide</a>
-                    </li>
-                </ul>
-            </div>
         </div>
         <div class="portlet-body">
             <div class="table-container">
@@ -36,55 +26,7 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                    @for(m <- models.askde.Appenders.find.all()){
-                        <tr class="odd gradeX">
-                            <td> Adjective </td>
-                            <td>
-                                @m.getMessage()
-                            </td>
-                            <td>
-                            	@if(m.isActive()){
-                                <button class="btn btn-info">Deactivate</button>
-                                }else{
-                                <button class="btn btn-danger">Activate</button>
-                                }
-                                <button class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                       }
-                    @for(m <- models.askde.Byline.find.all()){
-                        <tr class="odd gradeX">
-                            <td> Byline </td>
-                            <td>
-                                @m.getMessage()
-                            </td>
-                            <td>
-                            	@if(m.isActive()){
-                                <button class="btn btn-info">Deactivate</button>
-                                }else{
-                                <button class="btn btn-danger">Activate</button>
-                                }
-                                <button class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                       }                       
-                    @for(m <- models.askde.Intro.find.all()){
-                        <tr class="odd gradeX">
-                            <td> Intro </td>
-                            <td>
-                                @m.getMessage()
-                            </td>
-                            <td>
-                            	@if(m.isActive()){
-                                <button class="btn btn-info">Deactivate</button>
-                                }else{
-                                <button class="btn btn-danger">Activate</button>
-                                }
-                                <button class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                       }                       
-                    @for(m <- models.askde.Appenders.find.all()){
+                    @for(m <- models.askde.Appender.getAllCurrent()){
                         <tr class="odd gradeX">
                             <td> Appender </td>
                             <td>
@@ -99,23 +41,51 @@
                                 <button class="btn btn-danger">Delete</button>
                             </td>
                         </tr>
-                       }                        
+                       }
+                    @for(m <- models.askde.Byline.getAllCurrent()){
                         <tr class="odd gradeX">
-                            <td> ABC Law Firm </td>
+                            <td> Byline </td>
                             <td>
-                                60 East 42nd Street
+                                @m.getMessage()
                             </td>
                             <td>
-                                <button class="btn btn-info">Activate</button>
-                                <button class="btn btn-danger">Deactivate</button>
+                            	@if(m.isActive()){
+                                <a href="/deactivateMessage"><button class="btn btn-info">Deactivate</button></a>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
                                 <button class="btn btn-danger">Delete</button>
                             </td>
                         </tr>
-
+                       }                       
+                     
+                    @for(m <- models.askde.Adjective.getAllCurrent()){
+                        <tr class="odd gradeX">
+                            <td> Adjective </td>
+                            <td>
+                                @m.getMessage()
+                            </td>
+                            <td>
+                            	@if(m.isActive()){
+                                <button class="btn btn-info">Deactivate</button>
+                                }else{
+                                <button class="btn btn-danger">Activate</button>
+                                }
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                       }                        
 
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+}{
+
+<script>
+    $('.listing-item').addClass('active open selected');
+    $('.bylines-menu-item').addClass('active');
+</script>
+
 }

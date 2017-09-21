@@ -1,0 +1,70 @@
+@layout{
+
+    <div class="portlet light portlet-fit portlet-datatable">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">Last 100 Feeds Pulled</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-container">
+                <table class="table table-striped table-bordered table-hover table-checkable" id="sample_1">
+                    <thead>
+                        <tr>
+                            <th> Start </th>
+                            <th> End </th>
+                            <th> Total Listings </th>
+                            <th> Discarded </th>
+                            <th> Relevant </th>
+                            <th> Failed? </th>
+                            <th> Failure Cause </th>
+                            <th> Rentals </th>
+                            <th> Sales </th>
+                            <th> Neighborhoods </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th> Start </th>
+                            <th> End </th>
+                            <th> Total Listings </th>
+                            <th> Discarded </th>
+                            <th> Relevant </th>
+                            <th> Failed? </th>
+                            <th> Failure Cause </th>
+                            <th> Rentals </th>
+                            <th> Sales </th>
+                            <th> Neighborhoods </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    @for(o <- models.askde.ZillowFeedHistory.getLastestHundred()){
+                        <tr class="odd gradeX">
+                            <td> @o.getFeedLoadStart </td>
+                            <td> @o.getFeedLoadComplete() </td>
+                            <td> @o.getTotalListings() </td>
+                            <td> @o.getDiscardedListings() </td>
+                            <td> @o.getRelevantListings() </td>
+                            <td> @o.isFailed() </td>
+                            <td> @o.getFailureCause() </td>
+                            <td> @o.getRelevantRentals()</td>
+                            <td> @o.getRelevantSales()</td>
+                            <td> @o.getNeighborhoods()</td>
+                            
+                        </tr>
+                       }                      
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+}{
+<script>
+    $('.listing-item').addClass('active open selected');
+    $('.feed-history-menu-item').addClass('active');
+</script>
+}

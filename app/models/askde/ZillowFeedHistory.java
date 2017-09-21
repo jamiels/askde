@@ -1,6 +1,7 @@
 package models.askde;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +36,11 @@ public class ZillowFeedHistory extends BaseModel {
 	
 	@Column(columnDefinition = "TEXT") 
 	private String failureCause;
+	
+	
+	public static List<ZillowFeedHistory> getLastestHundred() {
+		return find.orderBy("feedLoadStart desc").setMaxRows(100).findList();
+	}
 	
 	public Date getFeedLoadStart() {
 		return feedLoadStart;
