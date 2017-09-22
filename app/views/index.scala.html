@@ -11,15 +11,15 @@
                 <table class="table table-striped table-bordered table-hover table-checkable" id="sample_1">
                     <thead>
                         <tr>
-                            <th> Type </th>
-                            <th> Message </th>
+                            <th> Part of Speech </th>
+                            <th> Text Content </th>
                             <th style="width:20%;"> Actions </th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th> Type </th>
-                            <th> Message </th>
+                            <th> Part of Speech </th>
+                            <th> Text Content </th>
                             <th>
 
                             </th>
@@ -36,7 +36,7 @@
                             	@if(m.isActive()){
                                 <a href="/deactivatePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-info">Deactivate</button></a>
                                 }else{
-                                <a href="/activatePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-danger">Activate</button></a>
+                                <a href="/activatePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-default">Activate</button></a>
                                 }
                                 <a href="/deletePartsOfSpeech?type=appender&uuid=@m.getUuid()"><button class="btn btn-danger">Delete</button></a>
                             </td>

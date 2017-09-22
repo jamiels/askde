@@ -13,7 +13,7 @@
     <title>Alexa Ask Douglas Elliman</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="MightyTaxi" name="description" />
+    <meta content="Alexa Ask Douglas Elliman" name="description" />
     <meta content="Override Labs" name="author" />
     <!-- BEGIN LAYOUT FIRST STYLES -->
     <link href="//fonts.googleapis.com/css?family=Oswald:400,300,700" rel="stylesheet" type="text/css" />
@@ -26,11 +26,8 @@
     <link href="/raven/assets/ui/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="/raven/assets/ui/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
-    <link href="/raven/assets/ui/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-    <link href="/raven/assets/ui/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-    <link href="/raven/assets/ui/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
     <link href="/raven/assets/ui/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/raven/assets/ui/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet">
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link href="/raven/assets/ui/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -38,7 +35,6 @@
     <!-- END THEME GLOBAL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <link href="/raven/assets/ui/layout/l5/css/layout.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/dashboard.css" rel="stylesheet" type="text/css" />
     <!-- END THEME LAYOUT STYLES -->
     <link rel="shortcut icon" href="favicon.ico" /> </head>
 <!-- END HEAD -->
@@ -76,7 +72,7 @@
                     <!-- BEGIN TOPBAR ACTIONS -->
                     <div class="topbar-actions">
                         <div class="btn-group">
-                            <button type="button" class="btn green btn-add-refferral">
+                            <button type="button" class="btn yellow btn-add-pos">
                                 New
                                 <i class="fa fa-plus-circle"></i>
                             </button>
@@ -103,7 +99,7 @@
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <ul class="nav navbar-nav margin-bottom-35 text-uppercase">
                                 <li class="bylines-menu-item">
-                                    <a href="/">
+                                    <a href="/viewPOS">
                                         <i class="icon-speech"></i> Parts of Speech</a>
                                 </li>
                                 <li class="open-houses-menu-item">
@@ -129,6 +125,10 @@
                                 <li class="initiate-feed-menu-item">
                                     <a href="/loadFeed?apiKey=df39e0ee-01f1-46b3-a0dd-4c639c6a7655">
                                     <i class="icon-reload"></i> Reload Feed </a>
+                                </li>
+                                <li class="initiate-feed-menu-item">
+                                    <a href="/logout">
+                                    <i class="icon-exit"></i> Logout </a>
                                 </li>
                             </ul>
                         </nav>
@@ -172,35 +172,45 @@
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" id="referral_dlg" role="document">
+    <form class="form-horizontal" action="/submitNewPartOfSpeech" method="post">
+     @helper.CSRF.formField
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">New Message</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal">
+                
                     <div class="form-group">
                         <label class="col-sm-2">Text</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="bylineText" placeholder="Text">
+                            <input type="text" class="form-control" name="textContent" placeholder="Text" required>
 
                         </div>
                     </div> 
                     <div class="form-group">
                         <label class="col-sm-2">Type</label>
-                        <div class="col-sm-10">
-                            <input type="radio" class="form-control" name="optionAppender" placeholder="Text">Appender
-                            <input type="radio" class="form-control" name="optionByline" placeholder="Text">Byline
-                            <input type="radio" class="form-control" name="optionAdjective" placeholder="Text">Adjective
+                        <div class="col-sm-10"> 
+                        <div class="mt-radio-list">
+                         <label  class="mt-radio mt-radio-outline">
+                            <input type="radio" name="optionAppender" checked>Appender
+                         </label >
+                         <label  class="mt-radio mt-radio-outline">
+                            <input type="radio" name="optionByline">Byline
+                          </label >
+                          <label  class="mt-radio mt-radio-outline">
+                            <input type="radio" name="optionAdjective">Adjective
+                          </label >
+                        </div>
                         </div>
                     </div> 
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div>
+      </form>
     </div>
 </div>
 <!-- end/modal -->
@@ -221,11 +231,9 @@
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="/raven/assets/ui/global/plugins/moment.min.js" type="text/javascript"></script>
-<script src="/raven/assets/ui/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
-<script src="/raven/assets/ui/global/plugins/morris/morris.min.js" type="text/javascript"></script>
-<script src="/raven/assets/ui/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
 <script src="/raven/assets/ui/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
 <script src="/raven/assets/ui/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
+<script src="/raven/assets/ui/global/plugins/jquery-notific8/jquery.notific8.min.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
 <script src="/raven/assets/ui/global/scripts/app.min.js" type="text/javascript"></script>
@@ -240,11 +248,11 @@
 <script>
     $(document).ready(function()
     {
-        $('#clickmewow').click(function()
-        {
-            $('#radio1003').attr('checked', 'checked');
-        });
-        $('.btn-add-refferral').click(function () {
+		   @if(flash.containsKey("msg")){
+			   $.notific8('@flash.get("msg")', {life: 5000, zindex: 20500, horizontalEdge: 'top', verticalEdge: 'right'});
+		   }
+
+        $('.btn-add-pos').click(function () {
             $('#myModal').modal('show');
         })
     })
@@ -254,7 +262,6 @@
 <!--<script src="/raven/assets/ui/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>-->
 <!--<script src="/raven/assets/ui/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>-->
 <script type="text/javascript" src="/assets/bower_components/datatables/datatables.min.js"></script>
-<script type="text/javascript" src="/assets/js/dashboard-market.js"></script>
 
 @script
 

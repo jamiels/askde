@@ -14,12 +14,14 @@ import com.avaje.ebean.Ebean;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import controllers.routes;
 import controllers.raven.BaseController;
+import forms.askde.NewPartOfSpeechForm;
 import models.askde.Adjective;
 import models.askde.Appender;
 import models.askde.Byline;
 import models.askde.Neighborhood;
 import models.askde.OpenHouse;
 import play.Logger;
+import play.data.Form;
 import play.mvc.Result;
 import services.askde.ListingsService;
 import views.html.*;
@@ -34,11 +36,13 @@ public class AdminPanelController extends BaseController {
         return ok(index.render());
     }
     
+	@SubjectPresent
     public Result viewOpenHouses() {
     	return ok(openhouses.render(OpenHouse.find.all()));
     }
     
   
+	@SubjectPresent
     public Result loadFeed() {
     	String apiKey = request().getQueryString("apiKey");
     	if(apiKey==null || apiKey.isEmpty())
@@ -50,10 +54,12 @@ public class AdminPanelController extends BaseController {
     	return redirect(controllers.askde.routes.AdminPanelController.viewFeedHistory());
     }
     
+	@SubjectPresent
     public Result viewZipCodes() {
     	return ok(zipcodes.render());
     }
     
+	@SubjectPresent
     public Result viewNeighborhoods() {
     	
     	List<OpenHouse> ohs = OpenHouse.find.all();
@@ -79,11 +85,12 @@ public class AdminPanelController extends BaseController {
     	return ok(neighborhoods.render(canonicalNeighborhoods,listingsNeighborhoods));
     }
     
+	@SubjectPresent
     public Result viewFeedHistory() {
     	return ok(feedhistory.render());
     }
     
-    
+	@SubjectPresent
     public Result deactivatePartsOfSpeech() {
     	String type = request().getQueryString("type");
     	if(type==null || type.isEmpty())
@@ -123,6 +130,7 @@ public class AdminPanelController extends BaseController {
     			
     }
     
+	@SubjectPresent
     public Result activatePartsOfSpeech() {
     	String type = request().getQueryString("type");
     	if(type==null || type.isEmpty())
@@ -162,6 +170,7 @@ public class AdminPanelController extends BaseController {
     			
     }    
 
+	@SubjectPresent
     public Result deletePartsOfSpeech() {
     	String type = request().getQueryString("type");
     	if(type==null || type.isEmpty())
@@ -201,13 +210,23 @@ public class AdminPanelController extends BaseController {
 
     }
     
+	@SubjectPresent
     public Result viewSkillInvocationHistory() {
     	return ok(skillinvocationhistory.render());
     }
     
     public Result submitNewPartOfSpeech() {
-    	
-    	return ok("");
+		Form<NewPartOfSpeechForm> request = ff.form(NewPartOfSpeechForm.class).bindFromRequest();
+    	if(request.hasErrors()) {
+    		showFormBindingErrors(request);
+    		return badRequest(request.errorsAsJson());
+    	}
+
+    	NewPartOfSpeechForm form = request.get();
+    	Logger.info("new text" + form.getTextContent());
+    	Logger.info("is adjective : " + form.isOptionAdjective());
+    	notification("Submitted");
+    	return redirect(controllers.askde.routes.AdminPanelController.index());
     }
 
 }

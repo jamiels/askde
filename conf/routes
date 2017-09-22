@@ -5,11 +5,11 @@
 #Inject Raven routes
 ->      /raven                				raven.Routes
 
-GET		/login						controllers.askde.AuthenticationController.login
+GET		/							controllers.askde.AuthenticationController.login
 POST	/authenticate				controllers.askde.AuthenticationController.authenticate
 GET		/logout						controllers.askde.AuthenticationController.logout
 
-GET     /                           controllers.askde.AdminPanelController.index
+GET     /viewPOS                    controllers.askde.AdminPanelController.index
 GET		/viewOpenHouses				controllers.askde.AdminPanelController.viewOpenHouses
 GET		/viewZipCodes				controllers.askde.AdminPanelController.viewZipCodes
 GET		/viewNeighborhoods			controllers.askde.AdminPanelController.viewNeighborhoods
