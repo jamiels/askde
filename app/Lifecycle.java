@@ -9,7 +9,7 @@ import models.askde.Neighborhood;
 import models.askde.ZipCode;
 import models.raven.AuthenticatedUser;
 import play.Application;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.Environment;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
@@ -21,16 +21,16 @@ public class Lifecycle extends BaseLifecycle {
 	
 	
 	@Inject
-	public Lifecycle(Environment env, Configuration conf, Application app, ApplicationLifecycle al, ListingsService ls) {
+	public Lifecycle(Environment env, Config conf, Application app, ApplicationLifecycle al, ListingsService ls) {
 		super(env, conf, app, al);
 	
-		if(Neighborhood.find.findRowCount() < 1) {
+		if(Neighborhood.find.query().findCount() < 1) {
 			Logger.info("Loading neighborhoods");
 			ls.loadCanonicalNeighborhoods();
 		}
 			
 		
-		if(ZipCode.find.findRowCount() < 1) {
+		if(ZipCode.find.query().findCount() < 1) {
 			Logger.info("Loading zip codes");
 			ls.loadZipCodes();
 		}

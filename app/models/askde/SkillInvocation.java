@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.avaje.ebean.Model.Finder;
+import io.ebean.Finder;
 
 import models.raven.BaseModel;
 
@@ -21,7 +21,7 @@ public class SkillInvocation extends BaseModel {
 	private String deviceID;
 	
 	public static List<SkillInvocation> getLastestHundred() {
-		return find.orderBy("createdAt desc").setMaxRows(100).findList();
+		return find.query().orderBy("createdAt desc").setMaxRows(100).findList();
 	}
 	
 	public String getSkill() {

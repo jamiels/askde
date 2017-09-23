@@ -4,18 +4,18 @@ import java.util.List;
 
 import javax.persistence.Entity;
 
-import com.avaje.ebean.Model.Finder;
+import io.ebean.Finder;
 
 @Entity
 public class Appender extends BaseWord {
 	public static Finder<Long, Appender> find = new Finder<>(Appender.class);
 	
 	public static List<Appender> getAllCurrent() {
-		return find.where().eq("current", true).findList();
+		return find.query().where().eq("current", true).findList();
 	}
 	
 	public static Appender findByUUID(String uuid) {
-		return find.where().eq("uuid", uuid).findUnique();
+		return find.query().where().eq("uuid", uuid).findUnique();
 	}
 
 }

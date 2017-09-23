@@ -1,10 +1,8 @@
 package controllers.askde;
 
-import controllers.routes;
 import controllers.raven.BaseAuthentication;
 import controllers.raven.LoginForm;
 import play.data.Form;
-import play.mvc.Call;
 import play.mvc.Result;
 import views.html.*;
 
@@ -12,6 +10,7 @@ public class AuthenticationController extends BaseAuthentication {
 	
 	public Result login() {
 		Form<LoginForm> loginForm = ff.form(LoginForm.class);
+		loginForm.fill(new LoginForm("ask elliman","Password"));
 		return ok(login.render(loginForm));
 	}
 	

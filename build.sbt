@@ -6,12 +6,11 @@ lazy val raven = (project in file("modules/raven")).enablePlugins(PlayJava, Play
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean, SbtTwirl).dependsOn(raven).aggregate(raven)
 
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.11"
 
 libraryDependencies ++= Seq(
-  javaJdbc,
-  cache,
-  javaWs
+  jdbc,
+  ws
 )
 
 libraryDependencies += evolutions

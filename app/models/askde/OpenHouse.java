@@ -8,7 +8,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.avaje.ebean.Model.Finder;
+import io.ebean.Finder;
 
 import models.raven.BaseModel;
 import play.Logger;

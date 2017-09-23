@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 
-import com.avaje.ebean.Model.Finder;
+import io.ebean.Finder;
 
 import models.raven.BaseModel;
 

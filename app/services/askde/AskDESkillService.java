@@ -1,5 +1,6 @@
 package services.askde;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -7,9 +8,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 
-import org.h2.util.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.askde.Adjective;
@@ -17,7 +18,7 @@ import models.askde.Appender;
 import models.askde.Byline;
 import models.askde.OpenHouse;
 import models.askde.SkillInvocation;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.Environment;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
@@ -33,7 +34,7 @@ public class AskDESkillService extends BaseAlexaService {
 
 
 	@Inject
-	public AskDESkillService(Environment env, Configuration conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
+	public AskDESkillService(Environment env, Config conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
 		super(env, conf, al);
 		this.ts = ts;
 		this.ws = ws;
@@ -102,7 +103,8 @@ public class AskDESkillService extends BaseAlexaService {
 	
 	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
 		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
-		if(!StringUtils.isNumber(zipCode)) {
+		
+		if(!NumberUtils.isCreatable(zipCode)) {
 			return packageResponse("The zip code was not found or came across as incomplete, please try again");
 		}
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
@@ -119,8 +121,8 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Consent token: " + consentToken);
 		
 		String endpoint = "https://api.amazonalexa.com//v1/devices/"+deviceId+"/settings/address/countryAndPostalCode";
-		CompletionStage<WSResponse> resp =  ws.url(endpoint).setHeader("Authorization","Bearer " + consentToken)
-				.setRequestTimeout(50000)
+		CompletionStage<WSResponse> resp =  ws.url(endpoint).addHeader("Authorization","Bearer " + consentToken)
+				.setRequestTimeout(Duration.ofMillis(50000))
 				.get();
 		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
 		try {
@@ -143,7 +145,7 @@ public class AskDESkillService extends BaseAlexaService {
 				return defaultResponse();
 			
 			Logger.info("Making sure its a number");
-			if(!StringUtils.isNumber(zipCode))
+			if(!NumberUtils.isCreatable(zipCode))
 				return defaultResponse();
 			
 			Logger.info("Pulling up an open house listing");

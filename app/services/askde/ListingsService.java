@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 
 import bindings.askde.listings.Listing;
 import bindings.askde.listings.Listings;
@@ -37,7 +38,7 @@ import exceptions.askde.ListingsLoadException;
 import models.askde.Neighborhood;
 import models.askde.ZillowFeedHistory;
 import models.askde.ZipCode;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.Environment;
 import play.Logger;
 import play.inject.ApplicationLifecycle;
@@ -51,7 +52,7 @@ public class ListingsService extends BaseService {
 	@Inject WSClient ws;
 	
 	@Inject
-	public ListingsService (Environment env, Configuration conf, ApplicationLifecycle al) {
+	public ListingsService (Environment env, Config conf, ApplicationLifecycle al) {
 		super(env,conf,al);
 	}
 	
@@ -63,7 +64,7 @@ public class ListingsService extends BaseService {
 	public models.askde.OpenHouse getRandomizedOpenHouseByNeighborhood(String neighborhood) {
 		Logger.info("## Search request for random open house by neighborhood " + neighborhood);
 		Date currentDateTime = new Date();
-		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.where().eq("neighborhood", neighborhood.toLowerCase()).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
+		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.query().where().eq("neighborhood", neighborhood.toLowerCase()).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
 		Logger.info("Matches with same neighborhood " + neighborhood + " found: " + results.size());
 		
 		if(results.size()>1) {
@@ -105,7 +106,7 @@ public class ListingsService extends BaseService {
 		// If there are no additional open houses at the same date/time, one is selected randomly from all open houses in that zip code
 		Logger.info("## Search request for random open house by zip code " + zipCode);
 		Date currentDateTime = new Date();
-		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.where().eq("zipCode", zipCode).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
+		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.query().where().eq("zipCode", zipCode).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
 		Logger.info("Matches with same zip code " + zipCode + " found: " + results.size());
 		
 		if(results.size()>1) {
@@ -140,7 +141,7 @@ public class ListingsService extends BaseService {
 	
 /*	public models.askde.OpenHouse getRandomizedOpenHouseByNeighborhood(String neighborhood) {
 		Date currentDateTime = new Date();
-		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.where().eq("neighborhood", neighborhood).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
+		List<models.askde.OpenHouse> results =  models.askde.OpenHouse.find.query().where().eq("neighborhood", neighborhood).and().gt("startDateTime", currentDateTime).order("startDateTime asc").findList();
 		if(results.size()>0)
 			retu
 	}*/
@@ -169,7 +170,7 @@ public class ListingsService extends BaseService {
 			e.printStackTrace();
 		}
         
-        Logger.info("Canonical neighborhoods loaded: " + Neighborhood.find.findRowCount());
+        Logger.info("Canonical neighborhoods loaded: " + Neighborhood.find.query().findCount());
 	}
 	
 	public void loadZipCodes() {
@@ -330,7 +331,7 @@ public class ListingsService extends BaseService {
 		}
 		Logger.info("Retrieving listings feed from Zillow at URL " + url);
 		CompletionStage<WSResponse> resp =  ws.url(url)
-				.setRequestTimeout(50000)
+				.setRequestTimeout(Duration.ofMillis(50000))
 				.get();
 		CompletionStage<InputStream> feed = resp.thenApply(WSResponse::getBodyAsStream);
 		try {
@@ -486,10 +487,10 @@ public class ListingsService extends BaseService {
 		
 		// Separate process to make the db changes within the shortest window possible
 		Logger.info("Preparation complete");
-		if(models.askde.OpenHouse.find.findRowCount()>0) {
+		if(models.askde.OpenHouse.find.query().findCount()>0) {
 			Logger.info("Purging old data and inserting new");
 			Date now = new Date();
-			List<models.askde.OpenHouse> delete = models.askde.OpenHouse.find.where().lt("createdAt", now).findList();
+			List<models.askde.OpenHouse> delete = models.askde.OpenHouse.find.query().where().lt("createdAt", now).findList();
 			Logger.info("Will purge " + delete.size() + " rows and insert " + listOfOpenHouses.size() + " rows");
 			try {
 				Logger.info("Starting transaction..");
@@ -512,7 +513,7 @@ public class ListingsService extends BaseService {
 		Logger.info("Number of NYC, Nassau, Suffolk & Westchester listings with open houses: " + listOfOpenHouses.size());
 		Logger.info("..Of which, # of rentals are: " + rentalsCount);
 		Logger.info("Number of listings discarded: " + discardedListings.getListing().size());
-		Logger.info("Rows stored in Open House DB: " + models.askde.OpenHouse.find.findRowCount());
+		Logger.info("Rows stored in Open House DB: " + models.askde.OpenHouse.find.query().findCount());
 		Logger.info("Storing discarded listings to data/DiscardedListings.xml");
 		try {
 			m = ctx.createMarshaller();

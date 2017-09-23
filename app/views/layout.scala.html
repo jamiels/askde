@@ -10,7 +10,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Alexa Ask Douglas Elliman</title>
+    <title>zzAlexa Ask Douglas Elliman</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Alexa Ask Douglas Elliman" name="description" />
@@ -36,7 +36,7 @@
     <!-- BEGIN THEME LAYOUT STYLES -->
     <link href="/raven/assets/ui/layout/l5/css/layout.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" /> </head>
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" /> </head>
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo">
@@ -59,16 +59,8 @@
                     <!-- End Toggle Button -->
                     <!-- BEGIN LOGO -->
                     <a id="index" class="page-logo" href="/">
-                        <img src="/raven/assets/layout/l5/img/logo.png" alt="Logo"> </a>
+                        <img src="/assets/images/logo.png" alt="Logo"> </a>
                     <!-- END LOGO -->
-                    <!-- BEGIN SEARCH -->
-                    <form class="search" action="extra_search.html" method="GET">
-                        <input type="name" class="form-control" name="query" placeholder="Search...">
-                        <a href="javascript:;" class="btn submit md-skip">
-                            <i class="fa fa-search"></i>
-                        </a>
-                    </form>
-                    <!-- END SEARCH -->
                     <!-- BEGIN TOPBAR ACTIONS -->
                     <div class="topbar-actions">
                         <div class="btn-group">
@@ -97,6 +89,7 @@
                         <nav class="navbar" role="navigation">
                             <!-- Brand and toggle get grouped for better mobile display -->
                             <!-- Collect the nav links, forms, and other content for toggling -->
+                            <h3>Dashboard</h3>
                             <ul class="nav navbar-nav margin-bottom-35 text-uppercase">
                                 <li class="bylines-menu-item">
                                     <a href="/viewPOS">
@@ -122,13 +115,14 @@
                                     <a href="/viewSkillInvocationHistory">
                                     <i class="icon-volume-2"></i> Skill Invocation History </a>
                                 </li>
-                                <li class="initiate-feed-menu-item">
-                                    <a href="/loadFeed?apiKey=df39e0ee-01f1-46b3-a0dd-4c639c6a7655">
-                                    <i class="icon-reload"></i> Reload Feed </a>
-                                </li>
-                                <li class="initiate-feed-menu-item">
+                            </ul>
+                            
+                            <h3>Account</h3>
+                            <ul class="nav navbar-nav">
+                                <li>
                                     <a href="/logout">
-                                    <i class="icon-exit"></i> Logout </a>
+                                        <i class="icon-logout"></i>Logout
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
@@ -177,7 +171,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">New Message</h4>
+                <h4 class="modal-title" id="myModalLabel">New Part of Speech</h4>
             </div>
             <div class="modal-body">
                 
@@ -238,11 +232,8 @@
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
 <script src="/raven/assets/ui/global/scripts/app.min.js" type="text/javascript"></script>
 <!-- END THEME GLOBAL SCRIPTS -->
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="assets/pages/scripts/dashboard.min.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
-<script src="/raven/assets/layout/l5/scripts/layout.min.js" type="text/javascript"></script>
+<script src="/raven/assets/ui/layout/l5/scripts/layout.min.js" type="text/javascript"></script>
 
 <!-- END THEME LAYOUT SCRIPTS -->
 <script>
@@ -257,12 +248,8 @@
         })
     })
 </script>
-
-<!--<script src="/raven/assets/ui/global/scripts/datatable.js" type="text/javascript"></script>-->
-<!--<script src="/raven/assets/ui/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>-->
-<!--<script src="/raven/assets/ui/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>-->
 <script type="text/javascript" src="/assets/bower_components/datatables/datatables.min.js"></script>
-
+<script type="text/javascript" src="/assets/javascripts/dashboard.js"></script>
 @script
 
 </body>

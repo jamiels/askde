@@ -9,7 +9,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import controllers.routes;
@@ -31,6 +31,7 @@ public class AdminPanelController extends BaseController {
 	@Inject ListingsService ls;
 	
 	
+	
 	@SubjectPresent
     public Result index() {
         return ok(index.render());
@@ -42,12 +43,15 @@ public class AdminPanelController extends BaseController {
     }
     
   
-	@SubjectPresent
     public Result loadFeed() {
-    	String apiKey = request().getQueryString("apiKey");
-    	if(apiKey==null || apiKey.isEmpty())
-    		return ok("");
-    	if(apiKey.equalsIgnoreCase("df39e0ee-01f1-46b3-a0dd-4c639c6a7655")) {
+		String apiKey =  conf.getString("askde.feedAPIKey");
+		String apiKeySubmitted = request().getQueryString("apiKey");
+		
+    	if(apiKey==null || apiKey.isEmpty() || apiKeySubmitted==null || apiKeySubmitted.isEmpty()) {
+    		notification("Unauthorized access to load feed");
+    		return redirect(controllers.askde.routes.AdminPanelController.viewFeedHistory());
+    	}
+    	if(apiKey.equalsIgnoreCase(apiKeySubmitted)) {
     		ls.loadOpenHouses();
     		return redirect(controllers.askde.routes.AdminPanelController.viewFeedHistory());
     	}
@@ -215,6 +219,7 @@ public class AdminPanelController extends BaseController {
     	return ok(skillinvocationhistory.render());
     }
     
+	@SubjectPresent
     public Result submitNewPartOfSpeech() {
 		Form<NewPartOfSpeechForm> request = ff.form(NewPartOfSpeechForm.class).bindFromRequest();
     	if(request.hasErrors()) {

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.avaje.ebean.Model.Finder;
+import io.ebean.Finder;
 
 import models.raven.BaseModel;
 import play.data.format.Formats;
@@ -39,7 +39,7 @@ public class ZillowFeedHistory extends BaseModel {
 	
 	
 	public static List<ZillowFeedHistory> getLastestHundred() {
-		return find.orderBy("feedLoadStart desc").setMaxRows(100).findList();
+		return find.query().orderBy("feedLoadStart desc").setMaxRows(100).findList();
 	}
 	
 	public Date getFeedLoadStart() {

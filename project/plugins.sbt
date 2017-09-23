@@ -1,5 +1,5 @@
 // The Play plugin
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.16")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.5")
 
 // Web plugins
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
@@ -8,7 +8,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.4")
 addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "1.0.8")
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.1")
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
-addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.6")
+//addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.9")
 
 // Play enhancer - this automatically generates getters/setters for public fields
 // and rewrites accessors of these fields to use the getters/setters. Remove this
@@ -18,6 +18,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.1.0")
 
 // Play Ebean support, to enable, uncomment this line, and enable in your build.sbt using
 // enablePlugins(PlayEbean).
-addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "3.0.2")
 
-addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.0.1")
+addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.0.3")
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.2.2")
