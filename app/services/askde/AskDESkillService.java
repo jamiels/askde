@@ -30,14 +30,12 @@ public class AskDESkillService extends BaseAlexaService {
 	
 
 	private ListingsService ts;
-	private WSClient ws;
 
 
 	@Inject
 	public AskDESkillService(Environment env, Config conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
-		super(env, conf, al);
+		super(env, conf, al, ws);
 		this.ts = ts;
-		this.ws = ws;
 		
 	}
 	
@@ -92,8 +90,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 	}
 	
-	public String intentOpenHouseByZipCode(String zipCode) {
-
+	public String intentOpenHouseByZipCode (String zipCode) {
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
 		String message= null;
 		if(oh==null)
@@ -104,86 +101,50 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
-		return message;		
+		return message;
 	}
 	
-	public String intentOpenHouseByZipCode(JsonNode incomingJsonRequest) {	
-		String zipCode = incomingJsonRequest.findPath("ZipCode").findPath("value").asText();
-		
+
+	public String intentOpenHouseByZipCode(SkillRequest sr) {	
+		String zipCode = sr.getJson().findPath("ZipCode").findPath("value").asText();
 		if(!NumberUtils.isCreatable(zipCode)) {
 			return packageResponse("The zip code was not found or came across as incomplete, please try again");
 		}
+		
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
 	}
 	
 	
-	public String intentOpenHouseNearMe(JsonNode incomingJsonRequest) {
-		String consentToken = getConsentToken(incomingJsonRequest);
-		String deviceId = getDeviceID(incomingJsonRequest);
-		if(consentToken==null || deviceId==null)
+	public String intentOpenHouseNearMe(SkillRequest sr) {
+
+		if(sr.getUserZipCode()==null || sr.getDeviceId()==null)
 			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
 		
-		 
-		Logger.info("Consent token: " + consentToken);
-		
-		String endpoint = "https://api.amazonalexa.com//v1/devices/"+deviceId+"/settings/address/countryAndPostalCode";
-		CompletionStage<WSResponse> resp =  ws.url(endpoint).addHeader("Authorization","Bearer " + consentToken)
-				.setRequestTimeout(Duration.ofMillis(50000))
-				.get();
-		CompletionStage<JsonNode> feed = resp.thenApply(WSResponse::asJson);
-		try {
-			JsonNode response = feed.toCompletableFuture().get();
-			
-			Logger.info("Check if response is null");
-			if (response==null)
-				return defaultResponse();
-			Logger.info("Response: " + response.toString());
-			
-			Logger.info("CHecking if postalCode exists");
-			JsonNode p = response.findPath("postalCode");
-			if(p==null)
-				return defaultResponse();
-			
-			Logger.info("Checking if zipcode is value is null or empty");
-			String zipCode = p.textValue();
-			Logger.info("Text value of postal field: " + p.textValue());
-			if(zipCode==null || zipCode.isEmpty())
-				return defaultResponse();
-			
-			Logger.info("Making sure its a number");
-			if(!NumberUtils.isCreatable(zipCode))
-				return defaultResponse();
-			
-			Logger.info("Pulling up an open house listing");
-			return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
-			
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		String zipCode = sr.getUserZipCode();
+		if(zipCode==null)
 			return defaultResponse();
-
-		}
+		
+		Logger.info("Consent token: " + sr.getConsentToken());
+		Logger.info("Pulling up an open house listing");
+		return packageResponse(addMarketing(intentOpenHouseByZipCode(sr.getUserZipCode())));
 	}
 	
 
-	public String intentOpenHouseByNeighborhood(JsonNode incomingJsonRequest) {	
-		String intent = getIntent(incomingJsonRequest);
-		if(intent==null || intent.isEmpty()) {
-			String messageIfIntentBlank = conf.getString("askde.messageIfIntentBlank");
-			Logger.info("Intent is blank or null - Response is: " + messageIfIntentBlank);
-			return packageResponse(messageIfIntentBlank);			
-		}
-		
+	public String intentOpenHouseByNeighborhood(SkillRequest sr) {	
 		String neighborhood = null;
-		JsonNode i = incomingJsonRequest.findPath("Neighborhood");
+		
+		JsonNode i = sr.getJson().findPath("Neighborhood");
 		if(i==null)
-			return null;
+			return packageResponse(generateErrorIntentBlank());
+		
 		JsonNode n = i.findPath("value");
 		if(n==null)
-			return null;
+			return packageResponse(generateErrorIntentBlank());
+		
 		neighborhood = n.textValue();
-		//return intent;
 		if(neighborhood==null)
-			return packageResponse("I couldn't grab what neighborhood you mentioned");
+			return packageResponse(generateErrorIntentBlank());
+		
 		Logger.info("Neighborhood retrieved is " + neighborhood);
 		OpenHouse oh = ts.getRandomizedOpenHouseByNeighborhood(neighborhood);
 		if(oh==null)
@@ -194,47 +155,56 @@ public class AskDESkillService extends BaseAlexaService {
 		return packageResponse(addMarketing(message));
 	}
 	
+	public String generateErrorListingsDown() {
+		String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
+		Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
+		return messageIfListingsDown;
+	}
+
+	public String generateErrorIntentBlank() {
+		String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
+		Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
+		return messageIfListingsDown;
+	}
+	
 	public String invoke(JsonNode incomingJsonRequest) {
 		Logger.info("Invoked");
 		if(ts == null || ts.getOpenHouses()==null || incomingJsonRequest==null) {
-			String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
-			Logger.info("Listings unavailable - Response is: " + messageIfListingsDown);
-			return packageResponse(messageIfListingsDown);
-		}
-		Logger.info("Request:");
-		Logger.info(incomingJsonRequest.toString());
-		
-		String intent = getIntent(incomingJsonRequest);
-		if(intent==null || intent.isEmpty()) {
-			String messageIfIntentBlank = conf.getString("askde.messageIfIntentBlank");
-			Logger.info("Intent is blank or null - Response is: " + messageIfIntentBlank);
-			return packageResponse(messageIfIntentBlank);			
+			return packageResponse(generateErrorListingsDown());
 		}
 		
-		intent = intent.toLowerCase();
+		SkillRequest sr = new SkillRequest(incomingJsonRequest);
+		String intent = sr.getIntent();
+		if(intent==null || intent.isEmpty()) 
+			return packageResponse(generateErrorIntentBlank());			
+
 		Logger.info("Intent invoked: " + intent);
 		String responseMessage = null;
-		SkillInvocation si = new SkillInvocation();
-		switch(intent) {
+		
+		switch(sr.getIntent().toLowerCase()) {
 			case "getnextopenhousebyzipcode":
-				si.setSkill("GetNextOpenHouseByZipCode");
-				responseMessage = intentOpenHouseByZipCode(incomingJsonRequest);
+				responseMessage = intentOpenHouseByZipCode(sr);
 				break;
 			case "getnextopenhousebyneighborhood":
-				si.setSkill("GetNextOpenHouseByNeighborhood");
-				responseMessage = intentOpenHouseByNeighborhood(incomingJsonRequest);
+				sr.setIntent("GetNextOpenHouseByNeighborhood");
+				responseMessage = intentOpenHouseByNeighborhood(sr);
 				break;
 			case "getnextopenhousenearme":
-				si.setSkill("GetNextOpenHouseNearMe");
-				responseMessage = intentOpenHouseNearMe(incomingJsonRequest);
+				sr.setIntent("GetNextOpenHouseNearMe");
+				responseMessage = intentOpenHouseNearMe(sr);
 				break;
 			default:
-				si.setSkill("Default");
+				sr.setIntent("Default");
 				responseMessage = defaultResponse(); // TODO: Change to a better message
 		}
-		si.setRequest(incomingJsonRequest.toString());
+		
+		
+		
+		SkillInvocation si = new SkillInvocation();
+		si.setSourceZipCode(sr.getUserZipCode());
+		si.setRequest(sr.getJson().toString());
 		si.setResponse(responseMessage);
-		si.setDeviceID(getDeviceID(incomingJsonRequest));
+		si.setDeviceID(sr.getDeviceId());
 		Ebean.save(si);
 		return responseMessage;		
 	}
@@ -245,7 +215,7 @@ public class AskDESkillService extends BaseAlexaService {
 			responseMessage="Hi, I couldn't get what you said, please repeat that!";
 		return packageResponse(addMarketing(responseMessage));
 	}
-		
+	
 
 
 }

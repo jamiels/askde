@@ -19,6 +19,7 @@ public class SkillInvocation extends BaseModel {
 	@Column(columnDefinition = "TEXT")
 	private String response;
 	private String deviceID;
+	private String sourceZipCode;
 	
 	public static List<SkillInvocation> getLastestHundred() {
 		return find.query().orderBy("createdAt desc").setMaxRows(100).findList();
@@ -57,6 +58,14 @@ public class SkillInvocation extends BaseModel {
 	}
 	public void setDeviceID(String deviceID) {
 		this.deviceID = deviceID;
+	}
+
+	public String getSourceZipCode() {
+		return sourceZipCode;
+	}
+
+	public void setSourceZipCode(String sourceZipCode) {
+		this.sourceZipCode = sourceZipCode;
 	}
 
 }
