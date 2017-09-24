@@ -201,6 +201,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		
 		SkillInvocation si = new SkillInvocation();
+		si.setSkill(sr.getIntent());
 		si.setSourceZipCode(sr.getUserZipCode());
 		si.setRequest(sr.getJson().toString());
 		si.setResponse(responseMessage);
