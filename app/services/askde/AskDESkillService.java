@@ -65,7 +65,7 @@ public class AskDESkillService extends BaseAlexaService {
 			return "";
 	}	
 	
-	public String convertPropertyDescriptionToSpeech(OpenHouse oh) {
+	public String convertPropertyDescriptionToSpeech(OpenHouse oh, boolean sayNeighborhood) {
 		String adjective = getAdjective();
 		String description = "This " + adjective + " ";
 		if(oh.isRental())
@@ -80,8 +80,14 @@ public class AskDESkillService extends BaseAlexaService {
 			bedrooms = " studio ";
 		
 		description+= bedrooms + " and " + oh.getBaths() + " bathroom ";
-		description+= "located in " + oh.getNeighborhood() + ". ";
-		description+= "<break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";		
+		if(sayNeighborhood=true)
+			description+= "located in " + oh.getNeighborhood() + " ";
+		else
+			description+= "located in the <say-as interpret-as='spell-out'>" + oh.getZipCode() + "</say-as> zip code ";
+		
+		description+= " and a current ask of $" + oh.getPrice();
+		
+		description+= " <break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";		
 		return description;
 		
 	}
@@ -94,7 +100,7 @@ public class AskDESkillService extends BaseAlexaService {
 			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
 		else {
 			message = "The next open house in <say-as interpret-as='spell-out'>" + zipCode+ "</say-as> is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
-			message += convertPropertyDescriptionToSpeech(oh);
+			message += convertPropertyDescriptionToSpeech(oh, true);
 		}
 		Logger.info("Response: " + message);
 		Logger.info("Packaged response: " + packageResponse(message));
@@ -184,7 +190,7 @@ public class AskDESkillService extends BaseAlexaService {
 			return packageResponse ("There are no open houses in the " + neighborhood + " neigbhorhood");
 		
 		String message = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
-		message += convertPropertyDescriptionToSpeech(oh);
+		message += convertPropertyDescriptionToSpeech(oh,false);
 		return packageResponse(addMarketing(message));
 	}
 	

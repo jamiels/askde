@@ -4,7 +4,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-settings font-dark"></i>
-                <span class="caption-subject font-dark sbold uppercase">Last 100 Skill Requests</span>
+                <span class="caption-subject font-dark sbold uppercase">Last 20 Skill Requests</span>
             </div>
         </div>
         <div class="portlet-body">
@@ -27,12 +27,12 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                    @for(o <- models.askde.SkillInvocation.getLastestHundred()){
+                    @for(o <- models.askde.SkillInvocation.getLastestTwenty()){
                         <tr class="odd gradeX">
-                            <td><div class='text-wrap width-200'>  @o.getSkill() </div></td>
-                            <td><div class='text-wrap width-200'> @o.getDeviceID()</div> </td>
-                            <td><div class='text-wrap width-200'> @o.getRequest() </div></td>
-                            <td><div class='text-wrap width-200'> @o.getResponse() </div> </td>                            
+                            <td>@o.getSkill()</td>
+                            <td>@o.getDeviceID()</td>
+                            <td>@o.getRequest() </td>
+                            <td>@o.getResponse()  </td>                            
                         </tr>
                        }                      
 
@@ -49,9 +49,13 @@
     $('.skill-invocation-history-menu-item').addClass('active');
 </script>
 <style>
-.td {word-wrap: break-word}
+table {
+  table-layout:fixed;
+}
+table td {word-wrap: break-word}
 .text-wrap{
     white-space:normal;
+    max-width: 400px;
 }
 .width-200{
     width:200px;

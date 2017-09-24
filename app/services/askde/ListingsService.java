@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -220,7 +221,7 @@ public class ListingsService extends BaseService {
 				o.getStartTime()!=null && 
 				!o.getStartTime().isEmpty() &&
 				o.getEndTime()!=null && 
-				!o.getEndTime().isEmpty())
+				!o.getEndTime().isEmpty() && checkOpenHouseIsAtOddHours(o))
 			return true;
 		return false;
 	}
@@ -242,6 +243,36 @@ public class ListingsService extends BaseService {
 		if(l.getListingDetails().getStatus().equalsIgnoreCase("for rent"))
 			return true;
 		return false;
+	}
+	
+	private boolean checkOpenHouseIsAtOddHours(OpenHouse o) {
+	    try {
+		    Date morningBoundary = new SimpleDateFormat("HH:mm:ss").parse(conf.getString("askde.openHouseMorningBoundary"));
+		    Calendar calendarMorningBoundary = Calendar.getInstance();
+		    calendarMorningBoundary.setTime(morningBoundary);
+	
+	
+		    Date nightBoundary = new SimpleDateFormat("HH:mm:ss").parse(conf.getString("askde.openHouseNightBoundary"));
+		    Calendar calendaryNightBoundary = Calendar.getInstance();
+		    calendaryNightBoundary.setTime(nightBoundary);
+		    calendaryNightBoundary.add(Calendar.DATE, 1);
+		    
+		    Date current = new SimpleDateFormat("HH:mm").parse(o.getStartTime());
+		    Calendar currentCalendar = Calendar.getInstance();
+		    currentCalendar.setTime(current);
+		    Date x = currentCalendar.getTime();
+		    
+		    if(x.after(calendarMorningBoundary.getTime()) && x.before(calendaryNightBoundary.getTime()))
+		    	return true;
+		    else {
+		    	Logger.info("Open house is at odd hour, discarded - From " + o.getStartTime() + " till " + o.getEndTime());
+		    	return false;
+		    }
+	    } catch (Exception e) {
+	    	Logger.error("checkOpenHouseIsAtOddHours error",e);
+	    }
+	    
+	    return false;
 	}
 	
 	private String expandNeighborhood(String neighborhood) {

@@ -24,6 +24,10 @@ public class SkillInvocation extends BaseModel {
 		return find.query().orderBy("createdAt desc").setMaxRows(100).findList();
 	}
 	
+	public static List<SkillInvocation> getLastestTwenty() {
+		return find.query().orderBy("createdAt desc").setMaxRows(20).findList();
+	}
+	
 	public String getSkill() {
 		return skill;
 	}

@@ -30,13 +30,13 @@
     message: Before you go
     current: true
 - !!models.askde.Byline
-    message: visit elliman.com for the most current listings
+    message: visit elliman dot com for the best listings in the New York area!
     current: true
 - !!models.askde.Byline
-    message: see this month's issue of the Elliman magazine
+    message: Make sure to check out this month's issue of the Elliman magazine at elliman dot com
     current: true
 - !!models.askde.Byline
-    message: Use elliman.com to look up listings using any of listing ID
+    message: You can go to elliman dot com and look up this and other great properties
     current: true
 - !!models.askde.Adjective
     message: Beautiful
