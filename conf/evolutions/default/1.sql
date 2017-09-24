@@ -440,6 +440,7 @@ create table skill_invocation (
   request                       TEXT,
   response                      TEXT,
   device_id                     varchar(255),
+  source_zip_code               varchar(255),
   version                       bigint not null,
   created_at                    DATETIME not null,
   updated_at                    DATETIME not null,
