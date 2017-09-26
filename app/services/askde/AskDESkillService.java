@@ -297,7 +297,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Getting permissions");
 		Permissions ps = u.getPermissions();
 		if(ps==null)
-			return defaultError();
+			return getPermissionsResponse();
 		Logger.info("Getting consentToken");
 		String consentToken = ps.getConsentToken();
 
