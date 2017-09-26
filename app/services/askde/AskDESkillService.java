@@ -50,6 +50,7 @@ public class AskDESkillService extends BaseAlexaService {
 	
 
 	private ListingsService ts;
+	
 
 
 	@Inject
@@ -59,13 +60,40 @@ public class AskDESkillService extends BaseAlexaService {
 		
 	}
 	
+	public SpeechletResponse intentOpenHouseByNeighborhood(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {	
+		
+		
+		String neighborhood = requestEnvelope.getRequest().getIntent().getSlot("Neighborhood").getValue();
+		if(neighborhood==null)
+			return  defaultError();
+					
+					//packageResponse(generateErrorIntentBlank());
+		
+		Logger.info("Neighborhood retrieved is " + neighborhood);
+		OpenHouse oh = ts.getRandomizedOpenHouseByNeighborhood(neighborhood);
+		if(oh==null) {
+			String speechText = intentOpenHouseByZipCode("There are currently no open houses in the " + neighborhood + " neigbhorhood");
+	        SimpleCard card = getSimpleCard("Ask Douglas Elliman",speechText);
+	        card.setTitle("Ask Douglas Elliman");
+	        card.setContent(speechText);
+	        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText); 
+			return SpeechletResponse.newTellResponse(speech,card);
+		}
+	
+		
+		String speechText = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+		speechText += convertPropertyDescriptionToSpeech(oh,false);
+		
+        SimpleCard card = getSimpleCard("Ask Douglas Elliman",speechText);
+        card.setTitle("Ask Douglas Elliman");
+        card.setContent(addMarketing(speechText));
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
+        return SpeechletResponse.newTellResponse(speech, card);
+	}
+	
     private SpeechletResponse getPermissionsResponse() {
         String speechText = "Ask Douglas Elliman does not have permission to access your zip code " +
             "Please give us permission by going into your Alexa app and following the instructions on the card we just sent you. See you soon.";
-
-        // Create the permission card content.
-        // The differences between a permissions card and a simple card is that the
-        // permissions card includes additional indicators for a user to enable permissions if needed.
         AskForPermissionsConsentCard card = new AskForPermissionsConsentCard();
         card.setTitle("Ask Douglas Elliman");
 
@@ -142,14 +170,14 @@ public class AskDESkillService extends BaseAlexaService {
 			case "getnextopenhousebyzipcode":
 				responseMessage = intentOpenHouseByZipCode(requestEnvelope);
 				break;
-/*			case "getnextopenhousebyneighborhood":
-				responseMessage = intentOpenHouseByNeighborhood(sr);
-				break;*/
+			case "getnextopenhousebyneighborhood":
+				responseMessage = intentOpenHouseByNeighborhood(requestEnvelope);
+				break;
 			case "getnextopenhousenearme":
 				responseMessage = intentOpenHouseNearMe(requestEnvelope);
 				break;
-			//default:
-				//responseMessage = defaultResponse(); // TODO: Change to a better message
+			default:
+				responseMessage = defaultError();
 		}
 		
 /*		SkillInvocation si = new SkillInvocation();
@@ -279,8 +307,8 @@ public class AskDESkillService extends BaseAlexaService {
     
     private SpeechletResponse defaultError() {
     	Logger.info("default error called");
-    	SimpleCard card = getSimpleCard("Ask Douglas Elliman","Looks like there's a problem");
-    	PlainTextOutputSpeech speech = getPlainTextOutputSpeech("Looks like there's a problem");
+    	SimpleCard card = getSimpleCard("Ask Douglas Elliman","Looks like there's a problem, please try again");
+    	PlainTextOutputSpeech speech = getPlainTextOutputSpeech("Looks like there's a problem, please try again");
     	return SpeechletResponse.newTellResponse(speech, card);
     }
     
@@ -382,7 +410,7 @@ public class AskDESkillService extends BaseAlexaService {
 	}*/
 	
 
-	public String intentOpenHouseByNeighborhood(SkillRequest sr) {	
+/*	public String intentOpenHouseByNeighborhood(SkillRequest sr) {	
 		String neighborhood = null;
 		
 		JsonNode i = sr.getJson().findPath("Neighborhood");
@@ -405,7 +433,7 @@ public class AskDESkillService extends BaseAlexaService {
 		String message = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
 		message += convertPropertyDescriptionToSpeech(oh,false);
 		return packageResponse(addMarketing(message));
-	}
+	}*/
 	
 	public String generateErrorListingsDown() {
 		String messageIfListingsDown = conf.getString("askde.messageIfListingsDown");
