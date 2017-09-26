@@ -16,7 +16,9 @@ import io.ebean.Ebean;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.Permissions;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.speechlet.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.askde.Adjective;
 import models.askde.Appender;
@@ -275,15 +277,36 @@ public class AskDESkillService extends BaseAlexaService {
         return context.getState(SystemInterface.class, SystemState.class);
     }
     
+    private SpeechletResponse defaultError() {
+    	Logger.info("default error called");
+    	SimpleCard card = getSimpleCard("Ask Douglas Elliman","Looks like there's a problem");
+    	PlainTextOutputSpeech speech = getPlainTextOutputSpeech("Looks like there's a problem");
+    	return SpeechletResponse.newTellResponse(speech, card);
+    }
+    
 	public SpeechletResponse intentOpenHouseNearMe(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
+		Logger.info("Getting session");
 		Session session = requestEnvelope.getSession();
-		String consentToken = session.getUser().getPermissions().getConsentToken();
-		String postalCode = null;
+		Logger.info("Got session");
+		if(session==null)
+			return defaultError();
+		Logger.info("Getting user");
+		User u = session.getUser();
+		if(u==null)
+			return defaultError();
+		Logger.info("Getting permissions");
+		Permissions ps = u.getPermissions();
+		if(ps==null)
+			return defaultError();
+		Logger.info("Getting consentToken");
+		String consentToken = ps.getConsentToken();
+
 		if(consentToken==null) {
 			Logger.info("Consent token empty");
 			return getPermissionsResponse();
 		}
 		
+		String postalCode = null;
 		try {
 			SystemState systemState = getSystemState(requestEnvelope.getContext());
 			String deviceID = systemState.getDevice().getDeviceId();
@@ -310,7 +333,7 @@ public class AskDESkillService extends BaseAlexaService {
             return getPermissionsResponse();
         } catch (DeviceAddressClientException e) {
         	e.printStackTrace();
-            Logger		.error("Device Address Client failed to successfully return the address.", e);
+            Logger.error("Device Address Client failed to successfully return the address.", e);
             return getAskResponse("Ask Douglas Elliman", "There was an error, please try again later");
         }
 		 
