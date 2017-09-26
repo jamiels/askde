@@ -17,6 +17,9 @@ libraryDependencies += evolutions
 libraryDependencies += filters
 
 
+
+
+
 // display unchecked and deprecated during compile
 javacOptions ++= Seq("-Xlint:unchecked")
 javacOptions ++= Seq("-Xlint:deprecation")

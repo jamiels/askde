@@ -23,7 +23,7 @@ GET		/deletePartsOfSpeech		controllers.askde.AdminPanelController.deletePartsOfS
 
 POST	/submitNewPartOfSpeech		controllers.askde.AdminPanelController.submitNewPartOfSpeech
 
-POST	/askde						controllers.askde.AskDESkillController.invoke
+POST	/askde						controllers.askde.AskDESkillController.handlePostResponse
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

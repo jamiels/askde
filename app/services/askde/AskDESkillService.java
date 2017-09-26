@@ -11,6 +11,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import io.ebean.Ebean;
+
+import com.amazon.speech.json.SpeechletRequestEnvelope;
+import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.SpeechletResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.askde.Adjective;
@@ -25,6 +29,11 @@ import play.inject.ApplicationLifecycle;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
+import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.amazon.speech.ui.Reprompt;
+import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.AskForPermissionsConsentCard;
 
 public class AskDESkillService extends BaseAlexaService {
 	
@@ -36,6 +45,81 @@ public class AskDESkillService extends BaseAlexaService {
 	public AskDESkillService(Environment env, Config conf, ApplicationLifecycle al, ListingsService ts, WSClient ws) {
 		super(env, conf, al, ws);
 		this.ts = ts;
+		
+	}
+	
+/*	public String invoke(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
+		if(ts == null || ts.getOpenHouses()==null || requestEnvelope==null) {
+			return packageResponse(generateErrorListingsDown());
+		}
+		
+		String intent = requestEnvelope.getRequest().getIntent().getName().toLowerCase();
+		String responseMessage = null;
+		switch(intent) {
+			case "getnextopenhousebyzipcode":
+				responseMessage = intentOpenHouseByZipCode(requestEnvelope);
+				break;
+			case "getnextopenhousebyneighborhood":
+				responseMessage = intentOpenHouseByNeighborhood(sr);
+				break;
+			case "getnextopenhousenearme":
+
+				responseMessage = intentOpenHouseNearMe(sr);
+				break;
+			default:
+				responseMessage = defaultResponse(); // TODO: Change to a better message
+		}
+		
+		SkillInvocation si = new SkillInvocation();
+		si.setSkill(requestEnvelope.getRequest().getIntent().getName());
+		if(requestEnvelope.getRequest().getIntent().getSlot("ZipCode")!=null)
+			si.setSourceZipCode(requestEnvelope.getRequest().getIntent().getSlot("ZipCode").getValue());
+		
+		si.setRequest(requestEnvelope.getRequest().toString());
+		si.setResponse(responseMessage);
+		si.setDeviceID("Fix this");
+		Ebean.save(si);
+		
+	}*/
+	
+	public SpeechletResponse invoke(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
+		if(ts == null || ts.getOpenHouses()==null || requestEnvelope==null) {
+	        SimpleCard card = new SimpleCard();
+	        card.setTitle("Ask Douglas Elliman");
+	        card.setContent(generateErrorListingsDown());
+	        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+	        speech.setText(generateErrorListingsDown());
+			return SpeechletResponse.newTellResponse(speech,card);
+		}
+		
+		String intent = requestEnvelope.getRequest().getIntent().getName().toLowerCase();
+		SpeechletResponse responseMessage = null;
+		switch(intent) {
+			case "getnextopenhousebyzipcode":
+				responseMessage = intentOpenHouseByZipCode(requestEnvelope);
+				break;
+/*			case "getnextopenhousebyneighborhood":
+				responseMessage = intentOpenHouseByNeighborhood(sr);
+				break;
+			case "getnextopenhousenearme":
+
+				responseMessage = intentOpenHouseNearMe(sr);
+				break;
+			default:
+				responseMessage = defaultResponse(); // TODO: Change to a better message
+*/		}
+		
+		SkillInvocation si = new SkillInvocation();
+		si.setSkill(requestEnvelope.getRequest().getIntent().getName());
+		if(requestEnvelope.getRequest().getIntent().getSlot("ZipCode")!=null)
+			si.setSourceZipCode(requestEnvelope.getRequest().getIntent().getSlot("ZipCode").getValue());
+		
+		si.setRequest(requestEnvelope.getRequest().toString());
+		si.setResponse(responseMessage.toString());
+		si.setDeviceID("Fix this");
+		Ebean.save(si);
+		
+		return responseMessage;
 		
 	}
 	
@@ -103,7 +187,27 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Packaged response: " + packageResponse(message));
 		return message;
 	}
-	
+
+	public SpeechletResponse intentOpenHouseByZipCode(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {	
+		String zipCode = requestEnvelope.getRequest().getIntent().getSlot("ZipCode").getValue();
+		if(!NumberUtils.isCreatable(zipCode)) {
+	        SimpleCard card = new SimpleCard();
+	        card.setTitle("Ask Douglas Elliman");
+	        card.setContent("The zip code was not found or came across as incomplete, please try again");
+	        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+	        speech.setText("The zip code was not found or came across as incomplete, please try again");
+			return SpeechletResponse.newTellResponse(speech,card);
+		}
+		
+		String speechText = intentOpenHouseByZipCode(zipCode);
+        SimpleCard card = new SimpleCard();
+        card.setTitle("Ask Douglas Elliman");
+        card.setContent(speechText);
+        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+        speech.setText(speechText);
+        
+		return SpeechletResponse.newTellResponse(speech,card);
+	}	
 
 	public String intentOpenHouseByZipCode(SkillRequest sr) {	
 		String zipCode = sr.getJson().findPath("ZipCode").findPath("value").asText();
