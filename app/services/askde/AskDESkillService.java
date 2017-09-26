@@ -1,7 +1,9 @@
 package services.askde;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,6 +18,7 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.twilio.sdk.resource.instance.Address;
 
 import models.askde.Adjective;
 import models.askde.Appender;
@@ -33,7 +36,12 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.amazon.speech.ui.AskForPermissionsConsentCard;
+import com.amazon.speech.speechlet.interfaces.system.SystemInterface;
+import com.amazon.speech.speechlet.interfaces.system.SystemState;
+
+
 
 public class AskDESkillService extends BaseAlexaService {
 	
@@ -48,6 +56,39 @@ public class AskDESkillService extends BaseAlexaService {
 		
 	}
 	
+    private SpeechletResponse getPermissionsResponse() {
+        String speechText = "You have not given this skill permissions to access your address. " +
+            "Please give this skill permissions to access your address.";
+
+        // Create the permission card content.
+        // The differences between a permissions card and a simple card is that the
+        // permissions card includes additional indicators for a user to enable permissions if needed.
+        AskForPermissionsConsentCard card = new AskForPermissionsConsentCard();
+        card.setTitle("Ask Douglas Elliman");
+
+        Set<String> permissions = new HashSet<>();
+        permissions.add("read::alexa:device:all:country_and_postal_code");
+        card.setPermissions(permissions);
+
+        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
+
+        return SpeechletResponse.newTellResponse(speech, card);
+    }
+	
+    private SsmlOutputSpeech getSsmlOutputSpeech(String speechText) {
+    	SsmlOutputSpeech speech = new SsmlOutputSpeech();
+    	speech.setSsml(speechText);
+        return speech;
+    }
+    
+    private PlainTextOutputSpeech getPlainTextOutputSpeech(String speechText) {
+        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+        speech.setText(speechText);
+
+        return speech;
+    }
+
+    
 /*	public String invoke(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
 		if(ts == null || ts.getOpenHouses()==null || requestEnvelope==null) {
 			return packageResponse(generateErrorListingsDown());
@@ -203,11 +244,39 @@ public class AskDESkillService extends BaseAlexaService {
         SimpleCard card = new SimpleCard();
         card.setTitle("Ask Douglas Elliman");
         card.setContent(speechText);
-        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(speechText);
-        
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}	
+	
+	
+	public SpeechletResponse intentOpenHouseNearMe(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
+/*		String consentToken = session.getUser().getPermissions().getConsentToken();
+		if(consentToken==null)
+			return getPermissionResponse();
+		SystemState systemState = getSystemState(speechletRequestEnvelope.getContext());
+		String deviceID = systemState.getDevice().getDeviceId();
+		String apiEndpoint = systemState.getApiEndpoint();
+		
+		
+		 AlexaDeviceAddressClient alexaDeviceAddressClient = new AlexaDeviceAddressClient(
+                 deviceId, consentToken, apiEndpoint);
+		 
+		 Address addressObject = alexaDeviceAddressClient.getFullAddress();
+		 String postalCode = addressObject.getPostalCode();
+		 
+		//requestEnvelope.getRequest().getIntent().
+		if(sr.getUserZipCode()==null || sr.getDeviceId()==null)
+			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
+		
+		String zipCode = sr.getUserZipCode();
+		if(zipCode==null)
+			return defaultResponse();
+		
+		Logger.info("Consent token: " + consentToken);
+		Logger.info("Pulling up an open house listing");
+		return packageResponse(addMarketing(intentOpenHouseByZipCode(postalCode)));*/
+		return null;
+	}
 
 	public String intentOpenHouseByZipCode(SkillRequest sr) {	
 		String zipCode = sr.getJson().findPath("ZipCode").findPath("value").asText();
@@ -217,6 +286,7 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
 	}
+	
 	
 	
 	public String intentOpenHouseNearMe(SkillRequest sr) {
