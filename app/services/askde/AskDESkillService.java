@@ -60,8 +60,8 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
     private SpeechletResponse getPermissionsResponse() {
-        String speechText = "You have not given this skill permissions to access your address. " +
-            "Please give this skill permissions to access your address.";
+        String speechText = "Ask Douglas Elliman does not have permission to access your zip code " +
+            "Please give us permission by going into your Alexa app and following the instructions on the card we just sent you. See you soon.";
 
         // Create the permission card content.
         // The differences between a permissions card and a simple card is that the
