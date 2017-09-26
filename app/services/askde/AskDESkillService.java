@@ -142,14 +142,13 @@ public class AskDESkillService extends BaseAlexaService {
 				break;
 /*			case "getnextopenhousebyneighborhood":
 				responseMessage = intentOpenHouseByNeighborhood(sr);
-				break;
+				break;*/
 			case "getnextopenhousenearme":
-
-				responseMessage = intentOpenHouseNearMe(sr);
+				responseMessage = intentOpenHouseNearMe(requestEnvelope);
 				break;
-			default:
-				responseMessage = defaultResponse(); // TODO: Change to a better message
-*/		}
+			//default:
+				//responseMessage = defaultResponse(); // TODO: Change to a better message
+		}
 		
 		SkillInvocation si = new SkillInvocation();
 		si.setSkill(requestEnvelope.getRequest().getIntent().getName());
@@ -307,7 +306,7 @@ public class AskDESkillService extends BaseAlexaService {
         } catch (UnauthorizedException e) {
             return getPermissionsResponse();
         } catch (DeviceAddressClientException e) {
-            Logger.error("Device Address Client failed to successfully return the address.", e);
+            Logger		.error("Device Address Client failed to successfully return the address.", e);
             return getAskResponse("Ask Douglas Elliman", "There was an error, please try again later");
         }
 		 
@@ -330,18 +329,18 @@ public class AskDESkillService extends BaseAlexaService {
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 
-	public String intentOpenHouseByZipCode(SkillRequest sr) {	
+/*	public String intentOpenHouseByZipCode(SkillRequest sr) {	
 		String zipCode = sr.getJson().findPath("ZipCode").findPath("value").asText();
 		if(!NumberUtils.isCreatable(zipCode)) {
 			return packageResponse("The zip code was not found or came across as incomplete, please try again");
 		}
 		
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(zipCode)));
-	}
+	}*/
 	
 	
 	
-	public String intentOpenHouseNearMe(SkillRequest sr) {
+/*	public String intentOpenHouseNearMe(SkillRequest sr) {
 
 		if(sr.getUserZipCode()==null || sr.getDeviceId()==null)
 			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
@@ -353,7 +352,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Consent token: " + sr.getConsentToken());
 		Logger.info("Pulling up an open house listing");
 		return packageResponse(addMarketing(intentOpenHouseByZipCode(sr.getUserZipCode())));
-	}
+	}*/
 	
 
 	public String intentOpenHouseByNeighborhood(SkillRequest sr) {	
@@ -393,7 +392,7 @@ public class AskDESkillService extends BaseAlexaService {
 		return messageIfListingsDown;
 	}
 	
-	public String invoke(JsonNode incomingJsonRequest) {
+/*	public String invoke(JsonNode incomingJsonRequest) {
 		Logger.info("Invoked");
 		if(ts == null || ts.getOpenHouses()==null || incomingJsonRequest==null) {
 			return packageResponse(generateErrorListingsDown());
@@ -434,7 +433,7 @@ public class AskDESkillService extends BaseAlexaService {
 		si.setDeviceID(sr.getDeviceId());
 		Ebean.save(si);
 		return responseMessage;		
-	}
+	}*/
 	
 	public String defaultResponse() {
 		String responseMessage = conf.getString("askde.messageIfListingsDown");

@@ -24,13 +24,13 @@ public class AskDESkillController extends BaseAlexaController {
 
 	@Inject AskDESkillService dess;
 	
-	public Result invoke() {
+/*	public Result invoke() {
 		Logger.info("Ask DE skill request received");
 		JsonNode json = request().body().asJson();
 		
 		return ok(dess.invoke(json)).as("application/json");
 		
-	}
+	}*/
 	
 	
     @Override
