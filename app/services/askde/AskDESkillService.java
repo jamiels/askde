@@ -150,7 +150,7 @@ public class AskDESkillService extends BaseAlexaService {
 				//responseMessage = defaultResponse(); // TODO: Change to a better message
 		}
 		
-		SkillInvocation si = new SkillInvocation();
+/*		SkillInvocation si = new SkillInvocation();
 		si.setSkill(requestEnvelope.getRequest().getIntent().getName());
 		if(requestEnvelope.getRequest().getIntent().getSlot("ZipCode")!=null)
 			si.setSourceZipCode(requestEnvelope.getRequest().getIntent().getSlot("ZipCode").getValue());
@@ -158,7 +158,7 @@ public class AskDESkillService extends BaseAlexaService {
 		si.setRequest(requestEnvelope.getRequest().toString());
 		si.setResponse(responseMessage.toString());
 		si.setDeviceID("Fix this");
-		Ebean.save(si);
+		Ebean.save(si);*/
 		
 		return responseMessage;
 		
