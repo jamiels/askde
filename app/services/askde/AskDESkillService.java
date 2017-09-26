@@ -70,7 +70,7 @@ public class AskDESkillService extends BaseAlexaService {
         card.setTitle("Ask Douglas Elliman");
 
         Set<String> permissions = new HashSet<>();
-        permissions.add("read::alexa:device:all:country_and_postal_code");
+        permissions.add("read::alexa:device:all:address:country_and_postal_code");
         card.setPermissions(permissions);
 
         PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
