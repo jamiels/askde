@@ -304,8 +304,10 @@ public class AskDESkillService extends BaseAlexaService {
 		 
 		 
         } catch (UnauthorizedException e) {
+        	e.printStackTrace();
             return getPermissionsResponse();
         } catch (DeviceAddressClientException e) {
+        	e.printStackTrace();
             Logger		.error("Device Address Client failed to successfully return the address.", e);
             return getAskResponse("Ask Douglas Elliman", "There was an error, please try again later");
         }
