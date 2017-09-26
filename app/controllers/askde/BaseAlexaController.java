@@ -64,6 +64,7 @@ public abstract class BaseAlexaController extends BaseController implements Spee
             } else {
                 // Verify the authenticity of the request by checking the provided signature &
                 // certificate.
+            	log.info("Checking authenticity");
                 Optional<String> signatureRequest = request().header(Sdk.SIGNATURE_REQUEST_HEADER);
                 Optional<String> signatureCertificateRequest = request().header(Sdk.SIGNATURE_CERTIFICATE_CHAIN_URL_REQUEST_HEADER);
 

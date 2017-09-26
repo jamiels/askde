@@ -77,7 +77,7 @@ public class AskDESkillService extends BaseAlexaService {
 	
     private SsmlOutputSpeech getSsmlOutputSpeech(String speechText) {
     	SsmlOutputSpeech speech = new SsmlOutputSpeech();
-    	speech.setSsml(speechText);
+    	speech.setSsml("<speak>"+speechText+"</speak>");
         return speech;
     }
     
