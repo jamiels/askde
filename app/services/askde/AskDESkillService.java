@@ -279,8 +279,10 @@ public class AskDESkillService extends BaseAlexaService {
 		Session session = requestEnvelope.getSession();
 		String consentToken = session.getUser().getPermissions().getConsentToken();
 		String postalCode = null;
-		if(consentToken==null)
+		if(consentToken==null) {
+			Logger.info("Consent token empty");
 			return getPermissionsResponse();
+		}
 		
 		try {
 			SystemState systemState = getSystemState(requestEnvelope.getContext());

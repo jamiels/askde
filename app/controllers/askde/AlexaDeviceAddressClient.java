@@ -53,7 +53,7 @@ public class AlexaDeviceAddressClient {
     public Address getFullAddress() throws DeviceAddressClientException {
         CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
 
-        String requestUrl = apiEndpoint + BASE_API_PATH + deviceId + SETTINGS_PATH + FULL_ADDRESS_PATH;
+        String requestUrl = apiEndpoint + BASE_API_PATH + deviceId + SETTINGS_PATH + COUNTRY_AND_POSTAL_CODE_PATH;
         log.info("Request will be made to the following URL: {}", requestUrl);
 
         HttpGet httpGet = new HttpGet(requestUrl);
