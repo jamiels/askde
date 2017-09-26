@@ -40,7 +40,7 @@ public class AskDESkillController extends BaseAlexaController {
 
         Intent intent = requestEnvelope.getRequest().getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
-
+        Logger.info("Fired onIntent");
         return dess.invoke(requestEnvelope);
 /*        if ("HelloWorldIntent".equals(intentName)) {
             return alexaService.getHelloResponse();
@@ -54,6 +54,7 @@ public class AskDESkillController extends BaseAlexaController {
 	@Override
 	public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> arg0) {
 		// TODO Auto-generated method stub
+		Logger.info("Fired onLaunch");
 		return null;
 	}
 
@@ -61,13 +62,15 @@ public class AskDESkillController extends BaseAlexaController {
 	@Override
 	public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> arg0) {
 		// TODO Auto-generated method stub
+		Logger.info("Fired onSessionEnded");
 		
 	}
 
 
 	@Override
 	public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> arg0) {
-		// TODO Auto-generated method stub
+		Logger.info("Fired onSessionStarted");
+		
 		
 	}
 }

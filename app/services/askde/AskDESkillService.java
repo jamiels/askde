@@ -18,8 +18,6 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.twilio.sdk.resource.instance.Address;
-
 import models.askde.Adjective;
 import models.askde.Appender;
 import models.askde.Byline;
@@ -32,7 +30,7 @@ import play.inject.ApplicationLifecycle;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
-import com.amazon.speech.speechlet.SpeechletResponse;
+import raven.exceptions.alexa.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
@@ -40,8 +38,11 @@ import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.amazon.speech.ui.AskForPermissionsConsentCard;
 import com.amazon.speech.speechlet.interfaces.system.SystemInterface;
 import com.amazon.speech.speechlet.interfaces.system.SystemState;
-
-
+import com.amazon.speech.ui.OutputSpeech;
+import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.Context;
+import controllers.askde.AlexaDeviceAddressClient;
+import controllers.askde.Address;
 
 public class AskDESkillService extends BaseAlexaService {
 	
@@ -248,34 +249,85 @@ public class AskDESkillService extends BaseAlexaService {
 		return SpeechletResponse.newTellResponse(speech,card);
 	}	
 	
-	
+    private SimpleCard getSimpleCard(String title, String content) {
+        SimpleCard card = new SimpleCard();
+        card.setTitle(title);
+        card.setContent(content);
+
+        return card;
+    }
+    
+    private Reprompt getReprompt(OutputSpeech outputSpeech) {
+        Reprompt reprompt = new Reprompt();
+        reprompt.setOutputSpeech(outputSpeech);
+
+        return reprompt;
+    }
+    
+    private SpeechletResponse getAskResponse(String cardTitle, String speechText) {
+        SimpleCard card = getSimpleCard(cardTitle, speechText);
+        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
+        Reprompt reprompt = getReprompt(speech);
+
+        return SpeechletResponse.newAskResponse(speech, reprompt, card);
+    }
+    
+    private SystemState getSystemState(Context context) {
+        return context.getState(SystemInterface.class, SystemState.class);
+    }
+    
 	public SpeechletResponse intentOpenHouseNearMe(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
-/*		String consentToken = session.getUser().getPermissions().getConsentToken();
+		Session session = requestEnvelope.getSession();
+		String consentToken = session.getUser().getPermissions().getConsentToken();
+		String postalCode = null;
 		if(consentToken==null)
-			return getPermissionResponse();
-		SystemState systemState = getSystemState(speechletRequestEnvelope.getContext());
-		String deviceID = systemState.getDevice().getDeviceId();
-		String apiEndpoint = systemState.getApiEndpoint();
+			return getPermissionsResponse();
 		
-		
-		 AlexaDeviceAddressClient alexaDeviceAddressClient = new AlexaDeviceAddressClient(
-                 deviceId, consentToken, apiEndpoint);
+		try {
+			SystemState systemState = getSystemState(requestEnvelope.getContext());
+			String deviceID = systemState.getDevice().getDeviceId();
+			String apiEndpoint = systemState.getApiEndpoint();
+			
+			
+			 AlexaDeviceAddressClient alexaDeviceAddressClient = new AlexaDeviceAddressClient(
+					 deviceID, consentToken, apiEndpoint);
+			 
+			 
+			 Address addressObject = alexaDeviceAddressClient.getFullAddress();
+	         if (addressObject == null) {
+	             return getAskResponse("Ask Douglas Elliman", "Address information missing, please try again");
+	         }
+			 
+			 
+			 postalCode = addressObject.getPostalCode();
+			 if(postalCode==null)
+				 return getAskResponse("Ask Douglas Elliman", "Address information missing, please try again");
 		 
-		 Address addressObject = alexaDeviceAddressClient.getFullAddress();
-		 String postalCode = addressObject.getPostalCode();
 		 
-		//requestEnvelope.getRequest().getIntent().
+        } catch (UnauthorizedException e) {
+            return getPermissionsResponse();
+        } catch (DeviceAddressClientException e) {
+            Logger.error("Device Address Client failed to successfully return the address.", e);
+            return getAskResponse("Ask Douglas Elliman", "There was an error, please try again later");
+        }
+		 
+/*		//requestEnvelope.getRequest().getIntent().
 		if(sr.getUserZipCode()==null || sr.getDeviceId()==null)
 			return "{  \"version\": \"1.0\",  \"response\": {    \"card\": {      \"type\": \"AskForPermissionsConsent\",      \"permissions\": [        \"read::alexa:device:all:country_and_postal_code\" ]}}}";
 		
 		String zipCode = sr.getUserZipCode();
 		if(zipCode==null)
-			return defaultResponse();
+			return defaultResponse();*/
 		
 		Logger.info("Consent token: " + consentToken);
 		Logger.info("Pulling up an open house listing");
-		return packageResponse(addMarketing(intentOpenHouseByZipCode(postalCode)));*/
-		return null;
+		
+		String speechText = addMarketing(intentOpenHouseByZipCode(postalCode));
+        SimpleCard card = new SimpleCard();
+        card.setTitle("Ask Douglas Elliman");
+        card.setContent(speechText);
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
+		return SpeechletResponse.newTellResponse(speech,card);
 	}
 
 	public String intentOpenHouseByZipCode(SkillRequest sr) {	
