@@ -89,7 +89,7 @@ public class AskDESkillService extends BaseAlexaService {
 	        card.setContent(generateErrorListingsDown());
 	        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
 	        speech.setText(generateErrorListingsDown());
-			return SpeechletResponse.newTellResponse(speech,card);
+			return SpeechletResponse.newTellResponse(speech,card);		
 		}
 		
 		String intent = requestEnvelope.getRequest().getIntent().getName().toLowerCase();
