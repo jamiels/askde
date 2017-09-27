@@ -134,9 +134,9 @@ public class AskDESkillService extends BaseAlexaService {
             return errorResponse();
         }
 		
-		String speechText = addMarketing(intentOpenHouseByZipCode(postalCode));
+		String speechText = intentOpenHouseByZipCode(postalCode);
         SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
@@ -151,7 +151,7 @@ public class AskDESkillService extends BaseAlexaService {
 			return errorResponse();
 		String speechText = intentOpenHouseByZipCode(zipCode);
         SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
@@ -177,7 +177,7 @@ public class AskDESkillService extends BaseAlexaService {
 		speechText += convertPropertyDescriptionToSpeech(oh,false);
 		
         SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText); 
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
         return SpeechletResponse.newTellResponse(speech, card);
 	}
 	
@@ -191,8 +191,8 @@ public class AskDESkillService extends BaseAlexaService {
         return super.getPermissionCountryAndPostalCodeResponse(speechText);
     }
 	
-	public String addMarketing(String message) {
-		return message + "<break time='2s'/>" + generateMarketing();
+	public String addMarketing() {
+		return " <break time='2s'/>" + generateMarketing();
 	}
 	
 	public String generateMarketing() {
