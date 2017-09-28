@@ -213,7 +213,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(bylines.size()>0 && appenders.size()>0) {
 			Appender appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
 			Byline byline = bylines.get(ThreadLocalRandom.current().nextInt(0, bylines.size()));
-			String message = " " + appender.getMessage() + " " + byline.getMessage() + "!";
+			String message = " " + appender.getMessage() + ", " + byline.getMessage() + "!";
 			return message;
 		} else
 			return "";
