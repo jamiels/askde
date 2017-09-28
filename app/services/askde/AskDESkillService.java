@@ -154,7 +154,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Map<String,String> speechText = intentOpenHouseByZipCode(zipCode);
 		Map<String,String> marketingText = addMarketing();
         SimpleCard card = getSimpleCard(speechText.get("plainText") + marketingText.get("plainText"));
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText.get("plainText") + marketingText.get("ssmlText")); 
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText.get("ssmlText") + marketingText.get("ssmlText")); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
