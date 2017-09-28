@@ -3,6 +3,7 @@ package services.askde;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.*;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -134,9 +135,10 @@ public class AskDESkillService extends BaseAlexaService {
             return errorResponse();
         }
 		
-		String speechText = intentOpenHouseByZipCode(postalCode);
-        SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
+		Map<String,String> speechText = intentOpenHouseByZipCode(postalCode);
+		Map<String,String> marketingText = addMarketing();
+        SimpleCard card = getSimpleCard(speechText.get("plainText") + marketingText.get("plainText"));
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText.get("ssmlText") + marketingText.get("ssmlText")); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
@@ -149,9 +151,10 @@ public class AskDESkillService extends BaseAlexaService {
 		String zipCode = zipCodeSlot.getValue();
 		if(zipCode==null || zipCode.isEmpty() || !NumberUtils.isCreatable(zipCode)) 
 			return errorResponse();
-		String speechText = intentOpenHouseByZipCode(zipCode);
-        SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
+		Map<String,String> speechText = intentOpenHouseByZipCode(zipCode);
+		Map<String,String> marketingText = addMarketing();
+        SimpleCard card = getSimpleCard(speechText.get("plainText") + marketingText.get("plainText"));
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText.get("plainText") + marketingText.get("ssmlText")); 
 		return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
@@ -165,19 +168,25 @@ public class AskDESkillService extends BaseAlexaService {
 			return  errorResponse();
 		Logger.info("Neighborhood retrieved is " + neighborhood);
 		OpenHouse oh = ts.getRandomizedOpenHouseByNeighborhood(neighborhood);
-		String speechText = null;
+		String plainText = null;
 		if(oh==null) {
-			speechText = "There are currently no open houses in the " + neighborhood + " neigbhorhood";
-	        SimpleCard card = getSimpleCard(speechText);
-	        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText); 
+			plainText = "There are currently no open houses in the " + neighborhood + " neigbhorhood";
+	        SimpleCard card = getSimpleCard(plainText);
+	        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(plainText); 
 			return SpeechletResponse.newTellResponse(speech,card);
 		}
-	
-		speechText = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
-		speechText += convertPropertyDescriptionToSpeech(oh,false);
 		
-        SimpleCard card = getSimpleCard(speechText);
-        SsmlOutputSpeech speech = getSsmlOutputSpeech(speechText + addMarketing()); 
+		plainText = "The next open house in " + neighborhood + " is at " + oh.getAddress() + " starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
+		String ssmlText = "The next open house in " + neighborhood + " is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+		
+		Map<String,String> propertyDescriptionText = convertPropertyDescriptionToSpeech(oh, false);
+		plainText += propertyDescriptionText.get("plainText");
+		ssmlText += propertyDescriptionText.get("ssmlText");
+		
+		Map<String,String> marketingText = addMarketing();
+		
+        SimpleCard card = getSimpleCard(plainText + marketingText.get("plainText"));
+        SsmlOutputSpeech speech = getSsmlOutputSpeech(ssmlText + marketingText.get("ssmlText")); 
         return SpeechletResponse.newTellResponse(speech, card);
 	}
 	
@@ -191,8 +200,11 @@ public class AskDESkillService extends BaseAlexaService {
         return super.getPermissionCountryAndPostalCodeResponse(speechText);
     }
 	
-	public String addMarketing() {
-		return " <break time='2s'/>" + generateMarketing();
+	public Map<String,String> addMarketing() {
+		String plainText = generateMarketing();
+		String ssmlText =  " <break time='2s'/>" + plainText;
+		Map<String,String> marketingText = putIntoMap(plainText,ssmlText);
+		return marketingText;
 	}
 	
 	public String generateMarketing() {
@@ -215,13 +227,14 @@ public class AskDESkillService extends BaseAlexaService {
 			return "";
 	}	
 	
-	public String convertPropertyDescriptionToSpeech(OpenHouse oh, boolean sayNeighborhood) {
+	public Map<String,String> convertPropertyDescriptionToSpeech(OpenHouse oh, boolean sayNeighborhood) {
 		String adjective = getAdjective();
-		String description = "This " + adjective + " ";
+		String plainText = "This " + adjective + " ";
+		String ssmlText = null;
 		if(oh.isRental())
-			description += "rental is a ";
+			plainText += "rental is a ";
 		else
-			description += oh.getPropertyType() + " for sale is a ";
+			plainText += oh.getPropertyType() + " for sale is a ";
 		
 		String bedrooms = null;
 		if(oh.getBaths().intValue()>0)
@@ -229,30 +242,50 @@ public class AskDESkillService extends BaseAlexaService {
 		else
 			bedrooms = " studio ";
 		
-		description+= bedrooms + " and " + oh.getBaths() + " bathroom ";
+		plainText+= bedrooms + " and " + oh.getBaths() + " bathroom ";
+		ssmlText = plainText.toString();
 		if(sayNeighborhood=true)
-			description+= "located in " + oh.getNeighborhood() + " ";
-		else
-			description+= "located in the <say-as interpret-as='spell-out'>" + oh.getZipCode() + "</say-as> zip code ";
-		
-		description+= " and a current ask of $" + oh.getPrice();
-		
-		description+= " <break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";		
-		return description;
+			plainText+= "located in " + oh.getNeighborhood() + " ";
+		else {
+			plainText += "located in the " + oh.getZipCode() + " zip code ";
+			ssmlText+= "located in the <say-as interpret-as='spell-out'>" + oh.getZipCode() + "</say-as> zip code ";
+		}
+		plainText+= " and a current ask of $" + oh.getPrice();
+		ssmlText+= " and a current ask of $" + oh.getPrice();
+				
+		ssmlText+= " <break time='1s'/>The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";
+		plainText+= "The listing ID is " + oh.getListingID().replace("*", "") + ".";
+		Map<String,String> speechText = putIntoMap(plainText,ssmlText);
+		return speechText;
 		
 	}
 	
-	public String intentOpenHouseByZipCode (String zipCode) {
+	public Map<String,String> intentOpenHouseByZipCode (String zipCode) {
 		OpenHouse oh = ts.getRandomizedOpenHouseByZipCode(Integer.valueOf(zipCode));
-		String message= null;
-		if(oh==null)
-			message="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
-		else {
-			message = "The next open house in <say-as interpret-as='spell-out'>" + zipCode+ "</say-as> is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
-			message += convertPropertyDescriptionToSpeech(oh, true);
+		Map<String,String> speechText = new HashMap<String,String>(2);
+		String plainText = null;
+		String ssmlText = null;
+		if(oh==null) {
+			plainText ="There are no open houses in the " + zipCode + " zip code";
+			ssmlText="There are no open houses in the  <say-as interpret-as='spell-out'>" + zipCode + "</say-as> zip code";
+		} else {
+			ssmlText = "The next open house in <say-as interpret-as='spell-out'>" + zipCode+ "</say-as> is at <say-as interpret-as='address'>" + oh.getAddress() + "</say-as> starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";
+			plainText = "The next open house in " + zipCode+ " is at " + oh.getAddress() + " starting " + convertDateTimeToSpeech(oh.getStartDateTime()) + " until " + convertTimeToSpeech(oh.getEndDateTime()) + ". ";			
+			Map<String,String> propertyDescriptionText = convertPropertyDescriptionToSpeech(oh, true);
+			ssmlText += propertyDescriptionText.get("ssmlText");
+			plainText += propertyDescriptionText.get("plainText");
 		}
-		Logger.info("Response: " + message);
-		return message;
+		
+		speechText = putIntoMap(plainText,ssmlText);
+		Logger.info("Response: " + plainText);
+		return speechText;
+	}
+	
+	private Map<String,String> putIntoMap(String plainText, String ssmlText) {
+		Map<String,String> map = new HashMap<String,String>(2);
+		map.put("plainText",plainText);
+		map.put("ssmlText",ssmlText);
+		return map;
 	}
 	
 	
