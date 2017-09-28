@@ -18,6 +18,7 @@ import io.ebean.Ebean;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Permissions;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.speechlet.User;
@@ -58,6 +59,14 @@ public class AskDESkillService extends BaseAlexaService {
 		super(env, conf, al, ws);
 		this.ts = ts;
 		this.CARD_TITLE = "Ask Douglas Elliman";
+	}
+	
+	public SpeechletResponse getWelcomeMessage(SpeechletRequestEnvelope<LaunchRequest> requestEnvelope) {
+		String speechText = "Hi and welcome to Ask Douglas Elliman Alexa service. For more information on us, visit Elliman.com. I've just send you a card to your Alex app detailing how to use this service";
+        String cardText = "To use the Ask Douglas Elliman service, simply choose one of the 3 ways to ask: Alexa, ask Douglas Elliman when is the next open house in Chelsea OR Alexa, ask Douglas Elliman when is the next open house in zip code 10012 OR Alexa, ask Douglas Elliman when is the next open house near me (Zip code permissions need to be enabled in your Alexa app for the Ask Douglas Elliman skill. Enjoy!";
+		SimpleCard card = getSimpleCard(cardText);
+        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText); 
+        return SpeechletResponse.newTellResponse(speech,card);
 	}
 	
 	public SpeechletResponse invoke(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
@@ -281,15 +290,6 @@ public class AskDESkillService extends BaseAlexaService {
 		return speechText;
 	}
 	
-	private Map<String,String> putIntoMap(String plainText, String ssmlText) {
-		Map<String,String> map = new HashMap<String,String>(2);
-		map.put("plainText",plainText);
-		map.put("ssmlText",ssmlText);
-		return map;
-	}
-	
-	
-
     private SpeechletResponse errorResponse() {    	
     	return errorResponse("Looks like there's a problem with the request, please try again");
     }

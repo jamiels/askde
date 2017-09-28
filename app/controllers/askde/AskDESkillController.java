@@ -52,10 +52,11 @@ public class AskDESkillController extends BaseAlexaController {
 
 
 	@Override
-	public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> arg0) {
+	public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> requestEnvelope) {
 		// TODO Auto-generated method stub
+
 		Logger.info("Fired onLaunch");
-		return null;
+		return dess.getWelcomeMessage(requestEnvelope);
 	}
 
 
