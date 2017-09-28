@@ -35,6 +35,8 @@ import play.inject.ApplicationLifecycle;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import raven.services.BaseAlexaService;
+import raven.alexa.Address;
+import raven.alexa.AlexaDeviceAddressClient;
 import raven.exceptions.alexa.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
@@ -45,8 +47,6 @@ import com.amazon.speech.ui.AskForPermissionsConsentCard;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.Context;
-import controllers.askde.AlexaDeviceAddressClient;
-import controllers.askde.Address;
 import com.amazon.speech.speechlet.interfaces.system.SystemInterface;
 import com.amazon.speech.speechlet.interfaces.system.SystemState;
 
@@ -289,7 +289,7 @@ public class AskDESkillService extends BaseAlexaService {
 		Logger.info("Response: " + plainText);
 		return speechText;
 	}
-	
+		
     private SpeechletResponse errorResponse() {    	
     	return errorResponse("Looks like there's a problem with the request, please try again");
     }

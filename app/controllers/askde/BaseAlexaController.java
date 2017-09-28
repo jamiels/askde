@@ -55,7 +55,7 @@ public abstract class BaseAlexaController extends BaseController implements Spee
                 Boolean.parseBoolean(System.getProperty(Sdk.DISABLE_REQUEST_SIGNATURE_CHECK_SYSTEM_PROPERTY));
     }
 
-    public Result handlePostResponse() {
+    public Result invoke() {
         Result result;
         try {
             byte[] serializedSpeechletRequest = request().body().asJson().toString().getBytes();
