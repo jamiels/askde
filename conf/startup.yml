@@ -33,10 +33,10 @@
     message: visit elliman dot com for the best listings in the New York area!
     current: true
 - !!models.askde.Byline
-    message: Make sure to check out this month's issue of the Elliman magazine at elliman dot com
+    message: Make sure to check out this month's issue of the Elliman magazine at Elliman.com
     current: true
 - !!models.askde.Byline
-    message: You can go to elliman dot com and look up this and other great properties
+    message: You can go to Elliman.com and look up this and other great properties
     current: true
 - !!models.askde.Adjective
     message: Beautiful

@@ -213,7 +213,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(bylines.size()>0 && appenders.size()>0) {
 			Appender appender = appenders.get(ThreadLocalRandom.current().nextInt(0, appenders.size()));
 			Byline byline = bylines.get(ThreadLocalRandom.current().nextInt(0, bylines.size()));
-			String message = appender.getMessage() + " " + byline.getMessage() + "!";
+			String message = " " + appender.getMessage() + " " + byline.getMessage() + "!";
 			return message;
 		} else
 			return "";
@@ -250,11 +250,11 @@ public class AskDESkillService extends BaseAlexaService {
 			plainText += "located in the " + oh.getZipCode() + " zip code ";
 			ssmlText+= "located in the <say-as interpret-as='spell-out'>" + oh.getZipCode() + "</say-as> zip code ";
 		}
-		plainText+= " and a current ask of $" + oh.getPrice();
-		ssmlText+= " and a current ask of $" + oh.getPrice();
+		plainText+= " and a current ask of $" + oh.getPrice() + ".";
+		ssmlText+= " and a current ask of $" + oh.getPrice() + ".";
 				
 		ssmlText+= " <break time='1s'/> The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";
-		plainText+= "The listing ID is " + oh.getListingID().replace("*", "") + ".";
+		plainText+= " The listing ID is " + oh.getListingID().replace("*", "") + ".";
 		Map<String,String> speechText = putIntoMap(plainText,ssmlText);
 		return speechText;
 		
