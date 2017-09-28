@@ -62,7 +62,7 @@ public class AskDESkillService extends BaseAlexaService {
 	}
 	
 	public SpeechletResponse getWelcomeMessage(SpeechletRequestEnvelope<LaunchRequest> requestEnvelope) {
-		String speechText = "Hi and welcome to Ask Douglas Elliman Alexa service. For more information on us, visit Elliman.com. I've just send you a card to your Alex app detailing how to use this service";
+		String speechText = "Hi and welcome to Ask Douglas Elliman Alexa service. For more information on us, visit Elliman.com. I've just sent you a card on your Alex app detailing how to use this service. Thank you and see you soon";
         String cardText = "To use the Ask Douglas Elliman service, simply choose one of the 3 ways to ask: Alexa, ask Douglas Elliman when is the next open house in Chelsea OR Alexa, ask Douglas Elliman when is the next open house in zip code 10012 OR Alexa, ask Douglas Elliman when is the next open house near me (Zip code permissions need to be enabled in your Alexa app for the Ask Douglas Elliman skill. Enjoy!";
 		SimpleCard card = getSimpleCard(cardText);
         PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText); 
