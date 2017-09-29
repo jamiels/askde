@@ -229,9 +229,7 @@ public class AdminPanelController extends BaseController {
     	}
     	
     	NewPartOfSpeechForm form = request.get();
-    	Logger.info("pos type is " + form.getPosType());
     	String posType = (form.getPosType()!=null) ? form.getPosType().toLowerCase() : "";
-    	Logger.info("pos type is " + posType);
     	BaseWord a = null;
     	if(posType.equals("adjective")) 
     		a = new Adjective();
