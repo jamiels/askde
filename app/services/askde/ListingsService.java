@@ -340,6 +340,17 @@ public class ListingsService extends BaseService {
 		return neighborhood;
 	}
 	
+	private String transformPropertyType(String propertyType) {
+		switch(propertyType.toLowerCase()) {
+			case "unit":
+				return "";
+			case "coop":
+				return "co-op";
+		}
+		
+		return propertyType;
+	}
+	
 	public void loadOpenHouses() throws ListingsLoadException {
 		ZillowFeedHistory zfh = new ZillowFeedHistory();
 		zfh.setFeedLoadStart(new Date());
@@ -500,7 +511,7 @@ public class ListingsService extends BaseService {
 								oh.setRental(isRental);
 								oh.setBeds(l.getBasicDetails().getBedrooms());
 								oh.setBaths(l.getBasicDetails().getBathrooms());
-								oh.setPropertyType(l.getBasicDetails().getPropertyType());
+								oh.setPropertyType(transformPropertyType(l.getBasicDetails().getPropertyType()));
 								oh.setCurrent(true);
 								listOfOpenHouses.add(oh);
 							} else {

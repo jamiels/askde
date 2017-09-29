@@ -235,10 +235,10 @@ public class AskDESkillService extends BaseAlexaService {
 		else
 			return "";
 	}	
-	
+		
 	public Map<String,String> convertPropertyDescriptionToSpeech(OpenHouse oh, boolean sayNeighborhood) {
 		String adjective = getAdjective();
-		String plainText = "This " + adjective + " ";
+		String plainText = "This <emphasis level='strong'>" + adjective + "</emphasis> ";
 		String ssmlText = null;
 		if(oh.isRental())
 			plainText += "rental is a ";
@@ -262,7 +262,7 @@ public class AskDESkillService extends BaseAlexaService {
 		plainText+= " and a current ask of $" + oh.getPrice() + ".";
 		ssmlText+= " and a current ask of $" + oh.getPrice() + ".";
 				
-		ssmlText+= " <break time='1s'/> The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";
+		ssmlText+= " <break strength='strong'/> The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";
 		plainText+= " The listing ID is " + oh.getListingID().replace("*", "") + ".";
 		Map<String,String> speechText = putIntoMap(plainText,ssmlText);
 		return speechText;

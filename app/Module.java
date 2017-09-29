@@ -1,5 +1,3 @@
-import java.time.Clock;
-
 import com.google.inject.AbstractModule;
 public class Module extends AbstractModule {
 

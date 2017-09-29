@@ -20,6 +20,7 @@ import models.askde.Appender;
 import models.askde.Byline;
 import models.askde.Neighborhood;
 import models.askde.OpenHouse;
+import models.askde.BaseWord;
 import play.Logger;
 import play.data.Form;
 import play.mvc.Result;
@@ -226,12 +227,31 @@ public class AdminPanelController extends BaseController {
     		showFormBindingErrors(request);
     		return badRequest(request.errorsAsJson());
     	}
-
+    	
     	NewPartOfSpeechForm form = request.get();
-    	Logger.info("new text" + form.getTextContent());
-    	Logger.info("is adjective : " + form.isOptionAdjective());
-    	notification("Submitted");
+    	Logger.info("pos type is " + form.getPosType());
+    	String posType = (form.getPosType()!=null) ? form.getPosType().toLowerCase() : "";
+    	Logger.info("pos type is " + posType);
+    	BaseWord a = null;
+    	if(posType.equals("adjective")) 
+    		a = new Adjective();
+    	else
+    		if(posType.equals("appender")) 
+    			a = new Appender();
+    		else
+    			if(posType.equals("byline"))
+    				a = new Byline();
+    	if(a!=null) {
+    		a.setMessage(form.getTextContent());
+    		a.setActive(true);
+    		a.setCurrent(true);
+        	notification("New " + posType + " added");
+        	Ebean.save(a);
+    	} else 
+	    	notification("There's a problem with the submission, please try again");
     	return redirect(controllers.askde.routes.AdminPanelController.index());
-    }
+	}
+	
+	
 
 }

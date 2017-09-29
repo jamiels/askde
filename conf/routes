@@ -19,7 +19,6 @@ GET		/activatePartsOfSpeech		controllers.askde.AdminPanelController.activatePart
 GET		/deletePartsOfSpeech		controllers.askde.AdminPanelController.deletePartsOfSpeech
 POST	/submitNewPartOfSpeech		controllers.askde.AdminPanelController.submitNewPartOfSpeech
 
-
 # Alexa skill REST API
 POST	/askde						controllers.askde.AskDESkillController.invoke
 	
