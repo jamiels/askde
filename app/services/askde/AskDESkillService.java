@@ -96,8 +96,17 @@ public class AskDESkillService extends BaseAlexaService {
 		si.setSkill(intent);
 		if(requestEnvelope.getRequest().getIntent().getSlot("ZipCode")!=null)
 			si.setSourceZipCode(requestEnvelope.getRequest().getIntent().getSlot("ZipCode").getValue());
-		si.setRequest(requestEnvelope.toString());
-		si.setResponse(responseMessage.getOutputSpeech().toString());
+		Map<String,Slot> slots = requestEnvelope.getRequest().getIntent().getSlots();
+		StringBuffer requestData = new StringBuffer();
+		for(String s : slots.keySet()) {
+			requestData.append(slots.get(s).getName());
+			requestData.append(":");
+			requestData.append(slots.get(s).getValue());
+			requestData.append("   ");
+		}
+		si.setRequest(requestData.toString());
+		SimpleCard card = (SimpleCard) responseMessage.getCard();
+		si.setResponse(card.getContent());
 		SystemState systemState = getSystemState(requestEnvelope.getContext());
 		String deviceID = systemState.getDevice().getDeviceId();
 		si.setDeviceID(deviceID);
