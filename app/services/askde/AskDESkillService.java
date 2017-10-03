@@ -187,19 +187,15 @@ public class AskDESkillService extends BaseAlexaService {
 			return errorResponse();
 		String neighborhood = null;
 		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null) {
-			Logger.info("Resolution exists");
 			Resolution r = neighborhoodSlot.getResolutions().getResolutionAtIndex(0);
 			ValueWrapper vw = r.getValueWrapperAtIndex(0);
 			if(vw==null) {
-				Logger.info("vw is null");
 				neighborhood = neighborhoodSlot.getValue();
 			} else {
-				Logger.info("vw is not null");
 				Value v = vw.getValue();				
 				if(v == null) {
 					neighborhood = neighborhoodSlot.getValue();
 				} else {
-					Logger.info("value = " + v.getName());
 					neighborhood = v.getName();
 				}
 			}			
