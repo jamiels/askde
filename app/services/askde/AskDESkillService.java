@@ -17,6 +17,9 @@ import io.ebean.Ebean;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Slot;
+import com.amazon.speech.slu.entityresolution.Resolution;
+import com.amazon.speech.slu.entityresolution.Value;
+import com.amazon.speech.slu.entityresolution.ValueWrapper;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Permissions;
@@ -104,6 +107,7 @@ public class AskDESkillService extends BaseAlexaService {
 			requestData.append(slots.get(s).getValue());
 			requestData.append("   ");
 		}
+		
 		si.setRequest(requestData.toString());
 		SimpleCard card = (SimpleCard) responseMessage.getCard();
 		si.setResponse(card.getContent());
@@ -181,7 +185,28 @@ public class AskDESkillService extends BaseAlexaService {
 		Slot neighborhoodSlot = requestEnvelope.getRequest().getIntent().getSlot("Neighborhood");
 		if(neighborhoodSlot==null)
 			return errorResponse();
-		String neighborhood = neighborhoodSlot.getValue();
+		String neighborhood = null;
+		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null) {
+			Logger.info("Resolution exists");
+			Resolution r = neighborhoodSlot.getResolutions().getResolutionAtIndex(0);
+			ValueWrapper vw = r.getValueWrapperAtIndex(0);
+			if(vw==null) {
+				Logger.info("vw is null");
+				neighborhood = neighborhoodSlot.getValue();
+			} else {
+				Logger.info("vw is not null");
+				Value v = vw.getValue();				
+				if(v == null) {
+					neighborhood = neighborhoodSlot.getValue();
+				} else {
+					Logger.info("value = " + v.getName());
+					neighborhood = v.getName();
+				}
+			}			
+		} else {
+			Logger.info("Resolution doesn't exist");
+			neighborhood = neighborhoodSlot.getValue();
+		}
 		if(neighborhood==null || neighborhood.isEmpty())
 			return  errorResponse();
 		Logger.info("Neighborhood retrieved is " + neighborhood);
