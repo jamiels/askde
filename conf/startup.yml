@@ -24,7 +24,7 @@
     message: And
     current: true
 - !!models.askde.Appender
-    message: Finally, 
+    message: Finally 
     current: true
 - !!models.askde.Appender
     message: Before you go

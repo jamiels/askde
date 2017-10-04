@@ -126,7 +126,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(session==null) return errorResponse("I wasn't clear on what you said, can you please try again");
 		
 		User u = session.getUser();
-		if(u==null) return errorResponse();
+		if(u==null) return errorResponse("I wasn't clear on what you said, can you please try again");
 		
 		Permissions ps = u.getPermissions();
 		if(ps==null) return getPermissionsResponse();
