@@ -186,7 +186,7 @@ public class AskDESkillService extends BaseAlexaService {
 		if(neighborhoodSlot==null)
 			return errorResponse("A neighborhood was not identified, please restate the neighborhood or try an alternative neighborhood");
 		String neighborhood = null;
-		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0).getValueWrappers().size()<1) {
+		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0).getValueWrappers().size()>0) {
 			Resolution r = neighborhoodSlot.getResolutions().getResolutionAtIndex(0);
 			Logger.info("r is null " + (r==null));
 			Logger.info("size " + r.getValueWrappers().size());
