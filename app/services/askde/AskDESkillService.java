@@ -123,7 +123,7 @@ public class AskDESkillService extends BaseAlexaService {
 	// Intents
 	public SpeechletResponse intentOpenHouseNearMe(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
 		Session session = requestEnvelope.getSession();
-		if(session==null) return errorResponse();
+		if(session==null) return errorResponse("I wasn't clear on what you said, can you please try again");
 		
 		User u = session.getUser();
 		if(u==null) return errorResponse();
@@ -154,7 +154,7 @@ public class AskDESkillService extends BaseAlexaService {
             return getPermissionsResponse();
         } catch (DeviceAddressClientException e) {
             Logger.error("Device Address Client failed to successfully return the address.", e);
-            return errorResponse();
+            return errorResponse("Douglas Elliman could not locate your zip code from Amazon, please make sure your address settings in your Alexa app are set properly");
         }
 		
 		Map<String,String> speechText = intentOpenHouseByZipCode(postalCode);
@@ -169,10 +169,10 @@ public class AskDESkillService extends BaseAlexaService {
 	public SpeechletResponse intentOpenHouseByZipCode(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {			
 		Slot zipCodeSlot = requestEnvelope.getRequest().getIntent().getSlot("ZipCode");
 		if(zipCodeSlot==null)
-			return errorResponse();
+			return errorResponse("No zip code was identified, can you please try again?");
 		String zipCode = zipCodeSlot.getValue();
 		if(zipCode==null || zipCode.isEmpty() || !NumberUtils.isCreatable(zipCode)) 
-			return errorResponse();
+			return errorResponse("No zip code was identified, can you please try again?");
 		Map<String,String> speechText = intentOpenHouseByZipCode(zipCode);
 		Map<String,String> marketingText = addMarketing();
         SimpleCard card = getSimpleCard(speechText.get("plainText") + marketingText.get("plainText"));
@@ -184,10 +184,12 @@ public class AskDESkillService extends BaseAlexaService {
 		
 		Slot neighborhoodSlot = requestEnvelope.getRequest().getIntent().getSlot("Neighborhood");
 		if(neighborhoodSlot==null)
-			return errorResponse();
+			return errorResponse("A neighborhood was not identified, please restate the neighborhood or try an alternative neighborhood");
 		String neighborhood = null;
-		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null) {
+		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0).getValueWrapperAtIndex(0)!=null) {
 			Resolution r = neighborhoodSlot.getResolutions().getResolutionAtIndex(0);
+			Logger.info("r is null " + (r==null));
+			Logger.info("size " + r.getValueWrappers().size());
 			ValueWrapper vw = r.getValueWrapperAtIndex(0);
 			if(vw==null) {
 				neighborhood = neighborhoodSlot.getValue();
@@ -204,7 +206,7 @@ public class AskDESkillService extends BaseAlexaService {
 			neighborhood = neighborhoodSlot.getValue();
 		}
 		if(neighborhood==null || neighborhood.isEmpty())
-			return  errorResponse();
+			return  errorResponse("No valid neighborhood was specified. Try giving it another shot.");
 		Logger.info("Neighborhood retrieved is " + neighborhood);
 		OpenHouse oh = ts.getRandomizedOpenHouseByNeighborhood(neighborhood);
 		String plainText = null;
@@ -327,7 +329,7 @@ public class AskDESkillService extends BaseAlexaService {
     private SpeechletResponse errorResponse(String errorMessage) {
     	Logger.info("default error called");
     	SimpleCard card = getSimpleCard(errorMessage);
-    	PlainTextOutputSpeech speech = getPlainTextOutputSpeech("Looks like there's a problem, please try again");  
+    	PlainTextOutputSpeech speech = getPlainTextOutputSpeech(errorMessage);  
     	return SpeechletResponse.newTellResponse(speech,card);
     }
     
