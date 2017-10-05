@@ -373,7 +373,7 @@ public class ListingsService extends BaseService {
 		}
 		Logger.info("Retrieving listings feed from Zillow at URL " + url);
 		CompletionStage<WSResponse> resp =  ws.url(url)
-				.setRequestTimeout(Duration.ofMillis(50000))
+				.setRequestTimeout(Duration.ofMillis(60000))
 				.get();
 		CompletionStage<InputStream> feed = resp.thenApply(WSResponse::getBodyAsStream);
 		try {

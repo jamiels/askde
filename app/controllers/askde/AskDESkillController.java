@@ -9,8 +9,11 @@ import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
+import controllers.raven.alexa.BaseAlexaController;
 import play.Logger;
 import services.askde.AskDESkillService;
+import util.App;
+import util.App;
 
 public class AskDESkillController extends BaseAlexaController {
 
@@ -18,6 +21,7 @@ public class AskDESkillController extends BaseAlexaController {
 	
 	public AskDESkillController() {
 		super();
+		App.prepareSystemProperties();
 	}
 	
     @Override

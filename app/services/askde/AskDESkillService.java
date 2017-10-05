@@ -46,7 +46,7 @@ import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.amazon.speech.ui.AskForPermissionsConsentCard;
-
+import com.amazon.speech.ui.Card;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.Context;
@@ -109,8 +109,19 @@ public class AskDESkillService extends BaseAlexaService {
 		}
 		
 		si.setRequest(requestData.toString());
-		SimpleCard card = (SimpleCard) responseMessage.getCard();
-		si.setResponse(card.getContent());
+		
+		if(responseMessage.getCard() instanceof SimpleCard) {
+			SimpleCard card = (SimpleCard) responseMessage.getCard();
+			 si.setResponse(card.getContent());
+		}else if (responseMessage.getCard() instanceof AskForPermissionsConsentCard) {
+			AskForPermissionsConsentCard card = (AskForPermissionsConsentCard) responseMessage.getCard();
+			StringBuffer permissions = new StringBuffer();
+			for(String s : card.getPermissions())
+				permissions.append(s);
+				permissions.append(" ");
+			si.setResponse("Permissions requested: " + permissions.toString());
+		}
+		
 		SystemState systemState = getSystemState(requestEnvelope.getContext());
 		String deviceID = systemState.getDevice().getDeviceId();
 		si.setDeviceID(deviceID);
@@ -188,8 +199,6 @@ public class AskDESkillService extends BaseAlexaService {
 		String neighborhood = null;
 		if(neighborhoodSlot.getResolutions()!=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0) !=null && neighborhoodSlot.getResolutions().getResolutionAtIndex(0).getValueWrappers().size()>0) {
 			Resolution r = neighborhoodSlot.getResolutions().getResolutionAtIndex(0);
-			Logger.info("r is null " + (r==null));
-			Logger.info("size " + r.getValueWrappers().size());
 			ValueWrapper vw = r.getValueWrapperAtIndex(0);
 			if(vw==null) {
 				neighborhood = neighborhoodSlot.getValue();
