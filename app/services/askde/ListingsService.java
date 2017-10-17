@@ -487,6 +487,7 @@ public class ListingsService extends BaseService {
 						}
 					Date now = new Date();
 					listingsWithOpenHouses.getListing().add(l); // need this to output a file 
+					String phoneNumber;
 					for(OpenHouse o : openHouses.getOpenHouse()) {
 						 // need to check if oh is in the past
 							if(!checkOpenHouseIsInPastAlready(now,o) && checkOpenHouseIsClean(o)) {	// check open house has relevant pieces of data before processing							
@@ -513,7 +514,13 @@ public class ListingsService extends BaseService {
 								oh.setBaths(l.getBasicDetails().getBathrooms());
 								oh.setPropertyType(transformPropertyType(l.getBasicDetails().getPropertyType()));
 								oh.setAgentName(l.getAgent().getFirstName() + " " +l.getAgent().getLastName());
-								oh.setAgentPhoneNumber(l.getAgent().getMobileLineNumber() != null ? l.getAgent().getMobileLineNumber() : l.getAgent().getOfficeLineNumber());
+								phoneNumber = l.getAgent().getMobileLineNumber();
+								if(phoneNumber==null || phoneNumber.isEmpty()) {
+									phoneNumber = l.getAgent().getOfficeLineNumber();
+									if(phoneNumber==null || phoneNumber.isEmpty())
+										phoneNumber = "(212) 891-7000";
+								}
+								oh.setAgentPhoneNumber(phoneNumber);
 								oh.setAgentEmail(l.getAgent().getEmailAddress());
 								oh.setCurrent(true);
 								listOfOpenHouses.add(oh);
