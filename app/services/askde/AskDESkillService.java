@@ -303,8 +303,8 @@ public class AskDESkillService extends BaseAlexaService {
 		plainText+= " and a current ask of $" + oh.getPrice() + ".";
 		ssmlText+= " and a current ask of $" + oh.getPrice() + ".";
 				
-		ssmlText+= " <break time='1s'/> The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as>.";
-		plainText+= " The listing ID is " + oh.getListingID().replace("*", "") + ".";
+		ssmlText+= " <break time='1s'/> The listing ID is <say-as interpret-as='spell-out'>" + oh.getListingID().replace("*", "") + "</say-as> and the listing agent is " + oh.getAgentName();
+		plainText+= " The listing ID is " + oh.getListingID().replace("*", "") + ". You can contact " + oh.getAgentName() + " via email at " + oh.getAgentEmail() + " or call them direct at " + oh.getAgentPhoneNumber();
 		Map<String,String> speechText = putIntoMap(plainText,ssmlText);
 		return speechText;
 		

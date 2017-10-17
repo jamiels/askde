@@ -49,7 +49,37 @@ public class OpenHouse extends BaseModel {
 	private BigDecimal beds;
 	private BigDecimal baths;
 	private String propertyType;
+	private String agentName;
+	private String agentEmail;
+	private String agentPhoneNumber;
 	
+	
+	
+	public String getAgentName() {
+		return agentName;
+	}
+
+	public void setAgentName(String agentName) {
+		this.agentName = agentName;
+	}
+
+	public String getAgentEmail() {
+		return agentEmail;
+	}
+
+	public void setAgentEmail(String agentEmail) {
+		this.agentEmail = agentEmail;
+	}
+
+
+	public String getAgentPhoneNumber() {
+		return agentPhoneNumber;
+	}
+
+	public void setAgentPhoneNumber(String agentPhoneNumber) {
+		this.agentPhoneNumber = agentPhoneNumber;
+	}
+
 	private Date convertToDate(String date, String time) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		try {

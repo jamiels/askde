@@ -512,6 +512,8 @@ public class ListingsService extends BaseService {
 								oh.setBeds(l.getBasicDetails().getBedrooms());
 								oh.setBaths(l.getBasicDetails().getBathrooms());
 								oh.setPropertyType(transformPropertyType(l.getBasicDetails().getPropertyType()));
+								oh.setAgentName(l.getAgent().getFirstName() + " " +l.getAgent().getLastName());
+								oh.setAgentPhoneNumber(l.getAgent().getMobileLineNumber() == null ? l.getAgent().getMobileLineNumber() : l.getAgent().getOfficeLineNumber());
 								oh.setCurrent(true);
 								listOfOpenHouses.add(oh);
 							} else {
