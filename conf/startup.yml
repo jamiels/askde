@@ -30,7 +30,7 @@
     message: Before you go
     current: true
 - !!models.askde.Byline
-    message: visit elliman dot com for the best listings in the New York area!
+    message: be sure to visit Elliman.com for the best listings in the New York area!
     current: true
 - !!models.askde.Byline
     message: Make sure to check out this month's issue of the Elliman magazine at Elliman.com
