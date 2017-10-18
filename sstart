@@ -1,2 +1,3 @@
-/home/ec2-user/activator/bin/activator clean-files clean stage
-/home/ec2-user/askde/target/universal/stage/bin/askde -Dconfig.resource=prod.conf -Dplay.crypto.secret="secretptbe!321" -J-server -J-XX:+UseConcMarkSweepGC &
+/home/ec2-user/sbt/bin/sbt clean-files clean stage
+/home/ec2-user/askde/target/universal/stage/bin/askde -Dconfig.resource=prod.conf -Dplay.http.secret.key="secretptbe!321" -J-server -J-XX:+UseConcMarkSweepGC &
+
