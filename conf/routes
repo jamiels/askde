@@ -20,6 +20,7 @@ GET		/deletePartsOfSpeech		controllers.askde.AdminPanelController.deletePartsOfS
 POST	/submitNewPartOfSpeech		controllers.askde.AdminPanelController.submitNewPartOfSpeech
 
 # Alexa skill REST API
++nocsrf
 POST	/askde						controllers.askde.AskDESkillController.invoke
 	
 # Map static resources from the /public folder to the /assets URL path
