@@ -287,6 +287,7 @@ public class ListingsService extends BaseService {
 		neighborhood = neighborhood.replace("east hampton village fringe", "east hampton village");
 		neighborhood = neighborhood.replace("bedford - stuyvesant", "bed stuy");
 		neighborhood = neighborhood.replace("prospect-lefferts gardens", "prospect lefferts gardens");
+		neighborhood = neighborhood.replace("prospect-lefferts garden", "prospect lefferts gardens");
 		neighborhood = neighborhood.replace("hastings-on-hudson", "hastings on hudson");
 		neighborhood = neighborhood.replace("soho - nolita", "soho");
 		neighborhood = neighborhood.replace("garden city s.", "garden city");
